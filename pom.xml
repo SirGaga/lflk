@@ -28,8 +28,8 @@
         <!--velocity模板引擎，用来生成mybatis的模板代码-->
         <velocity.version>2.2</velocity.version>
         <!--java连接mysql-->
-        <mysql-java.sersion>8.0.13</mysql-java.sersion>
-        <!--knife4j的版本-->
+        <mysql-java.version>8.0.13</mysql-java.version>
+        <!--knife4j的版本,swagger2美化-->
         <knife4j.version>2.0.4</knife4j.version>
         <!--easyExcel的版本-->
         <easyexcel-version>2.2.6</easyexcel-version>
@@ -66,7 +66,7 @@
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql-java.sersion}</version>
+                <version>${mysql-java.version}</version>
             </dependency>
             <!--mybatis-plus自动代码生成-->
             <dependency>
