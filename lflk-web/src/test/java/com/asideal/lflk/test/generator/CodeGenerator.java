@@ -1,4 +1,4 @@
-package com.asideal.lflk.generator;
+package com.asideal.lflk.test.generator;
 
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.annotation.IdType;

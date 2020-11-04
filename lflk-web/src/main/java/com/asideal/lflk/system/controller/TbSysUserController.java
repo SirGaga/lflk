@@ -6,12 +6,14 @@ import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.service.TbSysUserService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,7 +30,7 @@ import java.util.List;
 @RequestMapping("/system/user")
 public class TbSysUserController {
 
-    @Autowired
+    @Resource
     private TbSysUserService tbSysUserService;
 
     /**
@@ -38,9 +40,13 @@ public class TbSysUserController {
     @ApiOperation(value = "用户列表",notes = "全量查询用户信息")
     @GetMapping("/")
     @ResponseBody
-    public Result findUserAll(){
-        List<TbSysUser> list = tbSysUserService.list();
-        return Result.ok().data("users",list);
+    public Result findUserAll(@RequestParam(required = true,defaultValue = "1")Integer current,
+                              @RequestParam(required = true,defaultValue = "20")Integer size){
+        // 对用户进行分页，泛型中注入的就是返回数据的实体
+        Page<TbSysUser> page = new Page<>(current,size,true);
+        Page<TbSysUser> userPage = tbSysUserService.page(page);
+
+        return Result.ok().data("total",userPage.getTotal()).data("records",userPage.getRecords());
     }
 
     @ApiOperation(value = "查询单个用户",notes = "通过用户id查询对应的用户信息")

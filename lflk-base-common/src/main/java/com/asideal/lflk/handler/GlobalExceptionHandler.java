@@ -2,6 +2,7 @@ package com.asideal.lflk.handler;
 
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @since 2020-11-03
  */
 @ControllerAdvice
+@Log4j2
 public class GlobalExceptionHandler {
 
     /**
@@ -22,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public Result error(Exception e) {
-        e.printStackTrace();
+        log.error(e.getMessage());
         return Result.error();
     }
 
@@ -34,7 +36,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ArithmeticException.class)
     @ResponseBody
     public Result error(ArithmeticException e) {
-        e.printStackTrace();
+        log.error(e.getMessage());
         return Result.error()
                 .message(ResultCode.ARITHMETIC_EXCEPTION.getMessage())
                 .code(ResultCode.ARITHMETIC_EXCEPTION.getCode());
@@ -48,7 +50,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     @ResponseBody
     public Result error(BusinessException e) {
-        e.printStackTrace();
+        log.error(e.getErrMsg());
         return Result.error()
                 .message(e.getErrMsg())
                 .code(e.getCode());

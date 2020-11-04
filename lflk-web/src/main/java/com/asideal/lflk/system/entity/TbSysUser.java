@@ -64,8 +64,10 @@ public class TbSysUser implements Serializable {
     @ApiModelProperty(value = "最后更新时间 最后更新时间")
     private Date updateTime;
 
+    @ApiModelProperty(value = "用户密码 用户密码")
     private String password;
 
+    @ApiModelProperty(value = "部门编码 部门编码，遵守GAB规定")
     private String deptCode;
 
     @ApiModelProperty(value = "用户头像")
