@@ -8,13 +8,10 @@ import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.service.TbSysUserService;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * <p>
@@ -25,9 +22,9 @@ import java.util.List;
  * @since 2020-11-03
  */
 @Api(value = "系统用户管理模块",tags = "系统用户接口")
-@CrossOrigin
 @RestController
 @RequestMapping("/system/user")
+@CrossOrigin
 public class TbSysUserController {
 
     @Resource
@@ -39,7 +36,6 @@ public class TbSysUserController {
      */
     @ApiOperation(value = "用户列表",notes = "全量查询用户信息")
     @GetMapping("/")
-    @ResponseBody
     public Result findUserAll(@RequestParam(required = true,defaultValue = "1")Integer current,
                               @RequestParam(required = true,defaultValue = "20")Integer size){
         // 对用户进行分页，泛型中注入的就是返回数据的实体
