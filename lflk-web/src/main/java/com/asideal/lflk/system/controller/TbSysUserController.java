@@ -39,7 +39,7 @@ public class TbSysUserController {
     public Result findUserAll(@RequestParam(required = true,defaultValue = "1")Integer current,
                               @RequestParam(required = true,defaultValue = "20")Integer size){
         // 对用户进行分页，泛型中注入的就是返回数据的实体
-        Page<TbSysUser> page = new Page<>(current,size,true);
+        Page<TbSysUser> page = new Page<>(current,size);
         Page<TbSysUser> userPage = tbSysUserService.page(page);
 
         return Result.ok().data("total",userPage.getTotal()).data("records",userPage.getRecords());

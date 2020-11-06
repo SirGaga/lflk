@@ -35,13 +35,13 @@ public class TbSysDept implements Serializable {
     private String deptName;
 
     @ApiModelProperty(value = "父部门编号 父部门编号")
-    private Integer deptPid;
+    private Integer deptParentId;
 
     @ApiModelProperty(value = "父部门编码 父部门编码")
-    private String deptPcode;
+    private String deptParentCode;
 
     @ApiModelProperty(value = "父部门名称 父部门名称")
-    private String deptPname;
+    private String deptParentName;
 
     @ApiModelProperty(value = "创建人id 创建人id")
     private Integer createUserId;
