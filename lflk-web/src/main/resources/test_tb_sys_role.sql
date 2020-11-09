@@ -1,1 +1,0 @@
-insert into test.tb_sys_role (id, role_name, role_name_ch, role_remark, deleted, create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time) values (1, 'SUPER_ADMIN', '超级管理员', '拥有全部功能权限，能够进行全部操作', 0, 1, '管理员', '2020-11-03 09:34:10', 1, '管理员', '2020-11-03 09:34:10');

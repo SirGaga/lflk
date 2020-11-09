@@ -1,1 +1,0 @@
-insert into test.tb_sys_dept (dept_id, dept_code, dept_name, dept_parent_id, dept_parent_code, dept_parent_name, create_user_id, create_user_name, create_time, update_user_id, update_user_name, update_time, deleted) values (1, 00000000000000, '北京航天理想科技股份有限公司', 0, 00000000000000, '部门树', 1, '管理员', '2020-11-03 09:34:10', 1, '管理员', '2020-11-03 09:34:10', 0);
