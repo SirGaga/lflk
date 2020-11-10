@@ -44,7 +44,6 @@ public class TbSysUserController {
     public Result findUserAll(@RequestParam(required = true,defaultValue = "1")Integer current,
                               @RequestParam(required = true,defaultValue = "20")Integer size,
                               @RequestBody UserVo userVo){
-        System.out.println(userVo);
         // 对用户进行分页，泛型中注入的就是返回数据的实体
         Page<TbSysUser> page = new Page<>(current,size);
         IPage<TbSysUser> userPage = tbSysUserService.page(page, getQueryWrapper(userVo));
