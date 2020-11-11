@@ -35,6 +35,9 @@ public enum ResultCode implements CustomResultCode{
     USER_ACCOUNT_NOT_EXIST(2007, "账号不存在"),
     USER_ACCOUNT_ALREADY_EXIST(2008, "账号已存在"),
     USER_ACCOUNT_USE_BY_OTHERS(2009, "账号下线"),
+    USER_ACCOUNT_UPDATE_FAILURE(2010, "账号更新失败"),
+    USER_ACCOUNT_ADD_FAILURE(2011, "账号添加失败"),
+    USER_ACCOUNT_DELETE_FAILURE(2012, "账号删除失败"),
 
     /*部门错误*/
     DEPARTMENT_NOT_EXIST(3007, "部门不存在"),

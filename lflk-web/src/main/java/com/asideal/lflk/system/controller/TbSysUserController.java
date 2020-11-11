@@ -11,6 +11,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,10 +41,14 @@ public class TbSysUserController {
      * 查询所有用户
      * @return List<TbSysUser> 返回用户列表
      */
-    @ApiOperation(value = "用户列表",notes = "全量查询用户信息")
+    @ApiOperation(value = "用户列表", notes = "全量查询用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "current", value = "当前页", required = true, dataType = "Integer"),
+            @ApiImplicitParam(name = "size", value = "每页显示条数", required = true, dataType = "Integer")
+    })
     @PostMapping("/")
-    public Result findUserAll(@RequestParam(required = true,defaultValue = "1")Integer current,
-                              @RequestParam(required = true,defaultValue = "20")Integer size,
+    public Result findUserAll(@RequestParam(defaultValue = "1")Integer current,
+                              @RequestParam(defaultValue = "20")Integer size,
                               @RequestBody UserVo userVo){
         // 对用户进行分页，泛型中注入的就是返回数据的实体
         Page<TbSysUser> page = new Page<>(current,size);
@@ -51,7 +57,10 @@ public class TbSysUserController {
         return Result.ok().data("total",userPage.getTotal()).data("records",userPage.getRecords());
     }
 
-    @ApiOperation(value = "查询单个用户",notes = "通过用户id查询对应的用户信息")
+    @ApiOperation(value = "查询单个用户", notes = "通过用户id查询对应的用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
+    })
     @GetMapping("/{id}")
     public Result findUserById(@PathVariable Integer id){
         TbSysUser tbSysUser = tbSysUserService.getById(id);
@@ -59,6 +68,44 @@ public class TbSysUserController {
             return Result.ok().data("user",tbSysUser);
         } else {
             throw new BusinessException(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode(),ResultCode.USER_ACCOUNT_NOT_EXIST.getMessage());
+        }
+    }
+    @ApiOperation(value = "更新用户", notes = "根据用户的id和数据实体进行更新")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
+    })
+    @PutMapping("/{id}")
+    public Result updateUserById(@PathVariable Integer id, @RequestBody TbSysUser tbSysUser) {
+        boolean b = tbSysUserService.updateById(tbSysUser);
+        if (b) {
+            return Result.ok().data("result", true);
+        } else {
+            throw new BusinessException(ResultCode.USER_ACCOUNT_UPDATE_FAILURE.getCode(),ResultCode.USER_ACCOUNT_UPDATE_FAILURE.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "添加用户" ,notes = "根据用户实体添加用户")
+    @PostMapping("/add")
+    public Result saveUser(@RequestBody TbSysUser tbSysUser){
+        boolean b = tbSysUserService.save(tbSysUser);
+        if (b) {
+            return Result.ok().data("result", true);
+        } else {
+            throw new BusinessException(ResultCode.USER_ACCOUNT_ADD_FAILURE.getCode(),ResultCode.USER_ACCOUNT_ADD_FAILURE.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "删除用户" ,notes = "根据用户id删除用户")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
+    })
+    @DeleteMapping("/{id}")
+    public Result deleteUserById(@PathVariable Integer id){
+        boolean b = tbSysUserService.removeById(id);
+        if (b) {
+            return Result.ok().data("result", true);
+        } else {
+            throw new BusinessException(ResultCode.USER_ACCOUNT_DELETE_FAILURE.getCode(),ResultCode.USER_ACCOUNT_DELETE_FAILURE.getMessage());
         }
     }
 
