@@ -24,6 +24,8 @@ public enum ResultCode implements CustomResultCode{
     PARAM_IS_BLANK(1002, "参数为空"),
     PARAM_TYPE_ERROR(1003, "参数类型错误"),
     PARAM_NOT_COMPLETE(1004, "参数缺失"),
+    JWT_CREATE_ERROR(1005, "JWT创建异常"),
+    JWT_VERIFY_ERROR(1006, "JWT验证异常"),
 
     /* 用户错误 */
     USER_NOT_LOGIN(2001, "用户未登录"),
