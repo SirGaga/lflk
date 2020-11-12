@@ -39,6 +39,14 @@
         <log4j2-starter.version>2.3.5.RELEASE</log4j2-starter.version>
         <!--JWT-->
         <jwt-version>3.11.0</jwt-version>
+        <!--spring-security-->
+        <spring-security-version>2.3.5.RELEASE</spring-security-version>
+        <!--spring-test-->
+        <spring-test-version>2.3.5.RELEASE</spring-test-version>
+        <!--spring-web-->
+        <spring-web-version>2.3.5.RELEASE</spring-web-version>
+        <!--spring-boot-->
+        <spring-boot-version>2.3.5.RELEASE</spring-boot-version>
     </properties>
     <dependencyManagement>
         <!--    SpringBoot测试依赖    -->
@@ -72,6 +80,12 @@
                         <artifactId>spring-boot-starter-logging</artifactId>
                     </exclusion>
                 </exclusions>
+                <version>${spring-boot-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>${spring-security-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -125,6 +139,19 @@
                         <artifactId>junit-vintage-engine</artifactId>
                     </exclusion>
                 </exclusions>
+                <version>${spring-test-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <!--     去除掉原生的log启动器     -->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-logging</artifactId>
+                    </exclusion>
+                </exclusions>
+                <version>${spring-web-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
