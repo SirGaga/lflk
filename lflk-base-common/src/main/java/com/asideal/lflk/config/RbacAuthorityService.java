@@ -11,6 +11,8 @@ import java.util.Set;
 
 /**
  * 权限访问控制
+ * 这里通过获取到的用户中带着的权限信息/角色信息（这里取决于RBAC到底是那种模型）来获取菜单信息
+ *
  * @author ZhangJie
  * @since 2020-11-13
  */
@@ -24,13 +26,10 @@ public class RbacAuthorityService {
         if (userInfo instanceof UserDetails) {
 
             String username = ((UserDetails) userInfo).getUsername();
-            System.out.println(username);
             //获取资源
             Set<String> urls = new HashSet();
             // 这些 url 都是要登录后才能访问，且其他的 url 都不能访问！
-            urls.add("/**");
-            Set set2 = new HashSet();
-            Set set3 = new HashSet();
+            urls.add("/demo/**");
 
             AntPathMatcher antPathMatcher = new AntPathMatcher();
 

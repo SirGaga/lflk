@@ -1,6 +1,6 @@
 package com.asideal.lflk.system.service.impl;
 
-import com.asideal.lflk.login.entity.JwtUser;
+import com.asideal.lflk.system.vo.JwtUser;
 import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.mapper.TbSysUserMapper;
 import com.asideal.lflk.system.service.TbSysUserService;

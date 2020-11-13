@@ -2,6 +2,7 @@ package com.asideal.lflk.handler;
 
 import com.asideal.lflk.entity.SelfUserDetails;
 import com.asideal.lflk.response.Result;
+import com.asideal.lflk.utils.response.ResponseUtils;
 import com.asideal.lflk.utils.token.JwtTokenUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -26,8 +27,7 @@ public class JwtAuthenticationSuccessHandler implements AuthenticationSuccessHan
         SelfUserDetails userDetails = (SelfUserDetails) authentication.getPrincipal();
         Map<String,Object> claims = new HashMap<>();
         claims.put("id",userDetails.getId());
-
         String jwtToken = JwtTokenUtils.createToken(userDetails.getUsername(),claims);
-        httpServletResponse.getWriter().write(Result.ok().data("token",jwtToken).toString());
+        ResponseUtils.responseResult(httpServletResponse,Result.ok().data("token",jwtToken));
     }
 }

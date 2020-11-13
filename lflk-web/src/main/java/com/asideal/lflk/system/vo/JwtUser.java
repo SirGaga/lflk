@@ -1,4 +1,4 @@
-package com.asideal.lflk.login.entity;
+package com.asideal.lflk.system.vo;
 
 import com.asideal.lflk.entity.SelfUserDetails;
 import com.asideal.lflk.system.entity.TbSysUser;

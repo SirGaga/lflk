@@ -51,6 +51,8 @@
         <hutool.version>5.4.7</hutool.version>
         <!--druid-->
         <druid-version>1.2.3</druid-version>
+        <!--fastjson-->
+        <fastjson-version>1.2.73</fastjson-version>
     </properties>
     <dependencyManagement>
         <!--    SpringBoot测试依赖    -->
@@ -174,6 +176,11 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid</artifactId>
                 <version>${druid-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

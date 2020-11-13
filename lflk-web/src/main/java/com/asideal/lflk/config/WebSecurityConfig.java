@@ -15,6 +15,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.annotation.Resource;
 
+/**
+ * @author ZhangJie
+ * @since 2020-11-14
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
@@ -62,13 +66,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()//定义哪些URL需要被保护、哪些不需要被保护
 
                 .anyRequest()
-                .permitAll()
                 //任何请求,登录后可以访问
+                .permitAll()
                 //.access("@rbacauthorityservice.hasPermission(request,authentication)") // RBAC 动态 url 认证
-
                 .and()
-                .formLogin()  //开启登录, 定义当需要用户登录时候，转到的登录页面
-                .loginPage("/test/login.html")
+                .formLogin()  //开启登录, 定义当需要用户登录时候，转到的登录页面，
+                //.loginPage("/test/login.html") // 前后端分离的项目不需要开启此项
                 .loginProcessingUrl("/login")
                 .successHandler(jwtAuthenticationSuccessHandler) // 登录成功
                 .failureHandler(jwtAuthenticationFailureHandler) // 登录失败
@@ -79,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/logout")
                 .logoutSuccessHandler(jwtLogoutSuccessHandler)
                 .permitAll();
+
 
 
 

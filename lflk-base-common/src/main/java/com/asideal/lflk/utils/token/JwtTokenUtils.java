@@ -13,6 +13,11 @@ import java.security.Key;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * JWT工具类
+ * @author ZhangJie
+ * @since 2020-11-14
+ */
 @Component
 @Log4j2
 public class JwtTokenUtils implements InitializingBean {

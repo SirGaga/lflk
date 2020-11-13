@@ -6,6 +6,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serializable;
 import java.util.Collection;
 
+/**
+ * 实现了security提供的核心用户信息
+ * 用于后续的用户认证
+ * 下方中有部分字段的翻译
+ * 这里避免模块的循环依赖
+ * 在web模块中又创建了一个JwtUser来作为该类的子类
+ *
+ * @author ZhangJie
+ * @since 2020-11-14
+ */
 public class SelfUserDetails implements UserDetails, Serializable {
     private static final long serialVersionUID = 7171722954972237961L;
 

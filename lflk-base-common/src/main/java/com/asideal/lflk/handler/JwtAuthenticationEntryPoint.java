@@ -1,6 +1,8 @@
 package com.asideal.lflk.handler;
 
+import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
+import com.asideal.lflk.utils.response.ResponseUtils;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,6 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request,
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
-        response.sendError(ResultCode.USER_NOT_LOGIN.getCode(), ResultCode.USER_NOT_LOGIN.getMessage());
+        ResponseUtils.responseResult(response, Result.error().code(ResultCode.USER_NOT_LOGIN.getCode()).message(ResultCode.USER_NOT_LOGIN.getMessage()));
     }
 }

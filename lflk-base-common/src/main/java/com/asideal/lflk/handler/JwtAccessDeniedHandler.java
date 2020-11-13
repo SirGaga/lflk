@@ -1,6 +1,8 @@
 package com.asideal.lflk.handler;
 
+import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
+import com.asideal.lflk.utils.response.ResponseUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -18,6 +20,6 @@ import java.io.IOException;
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        response.sendError(ResultCode.NO_PERMISSION.getCode(), ResultCode.NO_PERMISSION.getMessage());
+        ResponseUtils.responseResult(response, Result.error().code(ResultCode.NO_PERMISSION.getCode()).message(ResultCode.NO_PERMISSION.getMessage()));
     }
 }
