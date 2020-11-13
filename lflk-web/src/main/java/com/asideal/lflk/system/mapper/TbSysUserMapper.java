@@ -14,4 +14,6 @@ import org.springframework.stereotype.Repository;
  */
 public interface TbSysUserMapper extends BaseMapper<TbSysUser> {
 
+    TbSysUser getUserAndRoleByUserName(String userName);
+
 }

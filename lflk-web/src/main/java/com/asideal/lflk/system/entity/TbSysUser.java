@@ -2,6 +2,8 @@ package com.asideal.lflk.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
@@ -27,6 +29,9 @@ public class TbSysUser implements Serializable {
     @ApiModelProperty(value = "主键ID 主键ID")
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+
+    @ApiModelProperty(value = "用户名")
+    private String userName;
 
     @ApiModelProperty(value = "姓名 真实姓名")
     private String realName;
@@ -75,6 +80,10 @@ public class TbSysUser implements Serializable {
 
     @ApiModelProperty(value = "是否可用，0不可用，1可用")
     private Integer status;
+
+    @ApiModelProperty(value = "用户角色")
+    @TableField(exist = false)
+    private String role;
 
     @ApiModelProperty(value = "是否删除，0逻辑未删除值(默认为 0)，1逻辑已删除")
     private Integer deleted;

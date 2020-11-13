@@ -2,8 +2,6 @@ package com.asideal.lflk.handler;
 
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
-import com.auth0.jwt.exceptions.JWTCreationException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -56,33 +54,6 @@ public class GlobalExceptionHandler {
         return Result.error()
                 .message(ResultCode.PARAM_NOT_VALID.getMessage())
                 .code(ResultCode.PARAM_NOT_VALID.getCode());
-    }
-    /**
-     * JWT创建异常的捕获
-     * @param e 运行时JWT创建异常
-     * @return 返回具体错误码
-     */
-    @ExceptionHandler(JWTCreationException.class)
-    @ResponseBody
-    public Result error(JWTCreationException e) {
-        log.error(e.getMessage());
-        return Result.error()
-                .message(ResultCode.JWT_CREATE_ERROR.getMessage())
-                .code(ResultCode.JWT_CREATE_ERROR.getCode());
-    }
-
-    /**
-     * JWT验证异常的捕获
-     * @param e 运行时JWT验证异常
-     * @return 返回具体错误码
-     */
-    @ExceptionHandler(JWTVerificationException.class)
-    @ResponseBody
-    public Result error(JWTVerificationException e) {
-        log.error(e.getMessage());
-        return Result.error()
-                .message(ResultCode.JWT_VERIFY_ERROR.getMessage())
-                .code(ResultCode.JWT_VERIFY_ERROR.getCode());
     }
 
     /**

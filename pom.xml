@@ -38,7 +38,7 @@
         <!--日志记录-->
         <log4j2-starter.version>2.3.5.RELEASE</log4j2-starter.version>
         <!--JWT-->
-        <jwt-version>3.11.0</jwt-version>
+        <jwt-version>0.11.1</jwt-version>
         <!--spring-security-->
         <spring-security-version>2.3.5.RELEASE</spring-security-version>
         <!--spring-test-->
@@ -47,6 +47,7 @@
         <spring-web-version>2.3.5.RELEASE</spring-web-version>
         <!--spring-boot-->
         <spring-boot-version>2.3.5.RELEASE</spring-boot-version>
+        <hutool.version>5.4.7</hutool.version>
     </properties>
     <dependencyManagement>
         <!--    SpringBoot测试依赖    -->
@@ -122,13 +123,21 @@
                 <artifactId>joda-time</artifactId>
                 <version>${jodaTime-version}</version>
             </dependency>
-
             <dependency>
-                <groupId>com.auth0</groupId>
-                <artifactId>java-jwt</artifactId>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-api</artifactId>
                 <version>${jwt-version}</version>
             </dependency>
-
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-impl</artifactId>
+                <version>${jwt-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.jsonwebtoken</groupId>
+                <artifactId>jjwt-jackson</artifactId>
+                <version>${jwt-version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-test</artifactId>
@@ -153,6 +162,11 @@
                 </exclusions>
                 <version>${spring-web-version}</version>
             </dependency>
+            <dependency>
+                <groupId>cn.hutool</groupId>
+                <artifactId>hutool-all</artifactId>
+                <version>${hutool.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -162,6 +176,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.springframework.boot</groupId>
+                            <artifactId>spring-boot-configuration-processor</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

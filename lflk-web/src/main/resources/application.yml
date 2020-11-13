@@ -24,12 +24,14 @@ mybatis-plus:
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
   mapper-locations: classpath*:/mapper/**/*.xml
+# jwt相关配置信息
 jwt:
-  route:
-    authentication:
-      path: /auth
   header: Authorization
-  expiration: 604800
-  secret: Asideal9090
+  # 令牌前缀
+  token-start-with: Bearer
+  # 使用Base64对该令牌进行编码 A90
+  base64-secret: QXNpZGVhbDkwOTA=
+  # 令牌过期时间 此处单位/毫秒
+  token-validity-in-seconds: 14400000
 
 
