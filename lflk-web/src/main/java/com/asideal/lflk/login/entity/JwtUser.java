@@ -1,12 +1,12 @@
 package com.asideal.lflk.login.entity;
 
+import com.asideal.lflk.entity.SelfUserDetails;
 import com.asideal.lflk.system.entity.TbSysUser;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -14,7 +14,7 @@ import java.util.Collections;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="用户验证对象", description="用户验证对象")
-public class JwtUser implements UserDetails {
+public class JwtUser extends SelfUserDetails {
 
     private Integer id;
     private String username;
@@ -29,11 +29,11 @@ public class JwtUser implements UserDetails {
         id = user.getId();
         username = user.getUserName();
         password = user.getPassword();
-        authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
+        authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRoleName()));
     }
 
 
-    // 获取权限信息，目前博主只会拿来存角色。。
+    // 获取权限信息
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

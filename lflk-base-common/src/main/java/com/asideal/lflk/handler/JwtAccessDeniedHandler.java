@@ -9,10 +9,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 没有访问权限的处理返回
+ * @author ZhangJie
+ * @since 2020-11-13
+ */
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
-        response.sendError(HttpServletResponse.SC_FORBIDDEN, ResultCode.NO_PERMISSION.getMessage());
+        response.sendError(ResultCode.NO_PERMISSION.getCode(), ResultCode.NO_PERMISSION.getMessage());
     }
 }

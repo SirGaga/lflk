@@ -1,107 +1,90 @@
 package com.asideal.lflk.config;
 
-import com.asideal.lflk.filter.JwtAuthenticationFilter;
-import com.asideal.lflk.handler.JwtAccessDeniedHandler;
-import com.asideal.lflk.handler.JwtAuthenticationEntryPoint;
-import com.asideal.lflk.token.JwtTokenUtils;
+import com.asideal.lflk.filter.JwtAuthenticationTokenFilter;
+import com.asideal.lflk.handler.*;
+import com.asideal.lflk.system.service.TbSysUserService;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.SecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.annotation.Resource;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    @Resource
+    JwtAuthenticationEntryPoint authenticationEntryPoint;//未登陆时返回 JSON 格式的数据给前端（否则为 html）
 
-    public WebSecurityConfig(JwtAccessDeniedHandler jwtAccessDeniedHandler, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtTokenUtils jwtTokenUtils) {
+    @Resource
+    JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler; //登录成功返回的 JSON 格式数据给前端（否则为 html）
 
-        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+    @Resource
+    JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler; //登录失败返回的 JSON 格式数据给前端（否则为 html）
 
+    @Resource
+    JwtLogoutSuccessHandler jwtLogoutSuccessHandler;//注销成功返回的 JSON 格式数据给前端（否则为 登录时的 html）
+
+    @Resource
+    JwtAccessDeniedHandler jwtAccessDeniedHandler;//无权访问返回的 JSON 格式数据给前端（否则为 403 html 页面）
+
+    @Resource
+    TbSysUserService tbSysUserService; // 自定义user
+
+    @Resource
+    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter; // JWT 拦截器
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // 加入自定义的安全认证
+//        auth.authenticationProvider(provider);
+        auth.userDetailsService(tbSysUserService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
-    protected void configure(HttpSecurity httpSecurity) throws Exception {
+    protected void configure(HttpSecurity http) throws Exception {
 
-        httpSecurity
-                // 禁用 CSRF
-                .csrf().disable()
-
-                // 授权异常
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
-
-                // 防止iframe 造成跨域
+        // 去掉 CSRF
+        http.csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 使用 JWT，关闭token
                 .and()
-                .headers()
-                .frameOptions()
-                .disable()
 
-                // 不创建会话
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .httpBasic().authenticationEntryPoint(authenticationEntryPoint)
 
                 .and()
-                .authorizeRequests()
+                .authorizeRequests()//定义哪些URL需要被保护、哪些不需要被保护
 
-                // 放行静态资源
-                .antMatchers(
-                        HttpMethod.GET,
-                        "/*.html",
-                        "/**/*.html",
-                        "/**/*.css",
-                        "/**/*.js",
-                        "/webSocket/**"
-                ).permitAll()
+                .anyRequest()
+                .permitAll()
+                //任何请求,登录后可以访问
+                //.access("@rbacauthorityservice.hasPermission(request,authentication)") // RBAC 动态 url 认证
 
-                // 放行swagger
-                .antMatchers("/swagger-ui.html").permitAll()
-                .antMatchers("/swagger-resources/**").permitAll()
-                .antMatchers("/webjars/**").permitAll()
-                .antMatchers("/*/api-docs").permitAll()
-                .antMatchers("/*/doc.html").permitAll()
+                .and()
+                .formLogin()  //开启登录, 定义当需要用户登录时候，转到的登录页面
+                .loginPage("/test/login.html")
+                .loginProcessingUrl("/login")
+                .successHandler(jwtAuthenticationSuccessHandler) // 登录成功
+                .failureHandler(jwtAuthenticationFailureHandler) // 登录失败
+                .permitAll()
 
-                // 放行文件访问
-                .antMatchers("/file/**").permitAll()
+                .and()
+                .logout()//默认注销行为为logout
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(jwtLogoutSuccessHandler)
+                .permitAll();
 
-                // 放行druid
-                .antMatchers("/druid/**").permitAll()
 
-                // 放行OPTIONS请求
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
-                //允许匿名及登录用户访问
-                .antMatchers("/api/auth/**", "/error/**").permitAll()
-                // 所有请求都需要认证
-                .anyRequest().authenticated();
+        http.exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler); // 无权访问 JSON 格式的数据
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class); // JWT Filter
 
-        // 禁用缓存
-        httpSecurity.headers().cacheControl();
-
-        // 添加JWT filter
-        httpSecurity
-                .apply(new TokenConfigurer());
-
-    }
-
-    public class TokenConfigurer extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
-        @Override
-        public void configure(HttpSecurity http) {
-            JwtAuthenticationFilter customFilter = new JwtAuthenticationFilter();
-            http.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class);
-        }
     }
 
 }

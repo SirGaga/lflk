@@ -15,6 +15,7 @@ package com.asideal.lflk.response;
 public enum ResultCode implements CustomResultCode{
     /* 成功 */
     SUCCESS(200, "成功"),
+    USER_LOGOUT_SUCCESS(201, "账号退出成功"),
 
     /* 默认失败 */
     COMMON_FAIL(999, "失败"),
@@ -30,7 +31,7 @@ public enum ResultCode implements CustomResultCode{
     /* 用户错误 */
     USER_NOT_LOGIN(2001, "用户未登录"),
     USER_ACCOUNT_EXPIRED(2002, "账号已过期"),
-    USER_CREDENTIALS_ERROR(2003, "密码错误"),
+    USER_CREDENTIALS_ERROR(2003, "用户/密码错误"),
     USER_CREDENTIALS_EXPIRED(2004, "密码过期"),
     USER_ACCOUNT_DISABLE(2005, "账号不可用"),
     USER_ACCOUNT_LOCKED(2006, "账号被锁定"),
@@ -40,6 +41,7 @@ public enum ResultCode implements CustomResultCode{
     USER_ACCOUNT_UPDATE_FAILURE(2010, "账号更新失败"),
     USER_ACCOUNT_ADD_FAILURE(2011, "账号添加失败"),
     USER_ACCOUNT_DELETE_FAILURE(2012, "账号删除失败"),
+
 
     /*部门错误*/
     DEPARTMENT_NOT_EXIST(3007, "部门不存在"),
