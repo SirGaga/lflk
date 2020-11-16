@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -84,6 +85,10 @@ public class TbSysUser implements Serializable {
     @ApiModelProperty(value = "用户角色")
     @TableField(exist = false)
     private String roleName;
+
+    @ApiModelProperty(value = "用户拥有的菜单")
+    @TableField(exist = false)
+    private List<TbSysMenu> tbSysMenuList;
 
     @ApiModelProperty(value = "是否删除，0逻辑未删除值(默认为 0)，1逻辑已删除")
     private Integer deleted;

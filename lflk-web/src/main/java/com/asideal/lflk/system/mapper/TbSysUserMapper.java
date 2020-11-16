@@ -2,7 +2,6 @@ package com.asideal.lflk.system.mapper;
 
 import com.asideal.lflk.system.entity.TbSysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -14,6 +13,6 @@ import org.springframework.stereotype.Repository;
  */
 public interface TbSysUserMapper extends BaseMapper<TbSysUser> {
 
-    TbSysUser getUserAndRoleByUserName(String userName);
+    TbSysUser getUserByUserName(String userName);
 
 }

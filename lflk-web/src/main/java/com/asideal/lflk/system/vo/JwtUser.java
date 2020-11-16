@@ -1,15 +1,15 @@
 package com.asideal.lflk.system.vo;
 
 import com.asideal.lflk.entity.SelfUserDetails;
+import com.asideal.lflk.system.entity.TbSysMenu;
 import com.asideal.lflk.system.entity.TbSysUser;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -20,16 +20,18 @@ public class JwtUser extends SelfUserDetails {
     private String username;
     private String password;
     private Collection<? extends GrantedAuthority> authorities;
+    private List<TbSysMenu> tbSysMenuList;
 
     public JwtUser() {
     }
 
     // 写一个能直接使用user创建jwtUser的构造器
-    public JwtUser(TbSysUser user) {
+    public JwtUser(TbSysUser user,Collection<? extends GrantedAuthority> authorities,List<TbSysMenu> tbSysMenuList) {
         id = user.getId();
         username = user.getUserName();
         password = user.getPassword();
-        authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRoleName()));
+        this.authorities = authorities;
+        this.tbSysMenuList = getTbSysMenuList();
     }
 
 
@@ -73,7 +75,16 @@ public class JwtUser extends SelfUserDetails {
         return true;
     }
 
+    public List<TbSysMenu> getTbSysMenuList() {
+        return tbSysMenuList;
+    }
+
+    public void setTbSysMenuList(List<TbSysMenu> tbSysMenuList) {
+        this.tbSysMenuList = tbSysMenuList;
+    }
+
     // 我自己重写打印下信息看的
+
     @Override
     public String toString() {
         return "JwtUser{" +
@@ -81,6 +92,7 @@ public class JwtUser extends SelfUserDetails {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", authorities=" + authorities +
+                ", tbSysMenuList=" + tbSysMenuList +
                 '}';
     }
 }

@@ -2,16 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asideal.lflk.system.mapper.TbSysUserMapper">
 
-    <select id="getUserAndRoleByUserName"  resultType="TbSysUser">
+    <select id="getUserByUserName"  resultType="TbSysUser">
         select
-          u.*,
-          r.role_name
+          u.*
         from
-             tb_sys_user u,
-             tb_sys_user_role ur,
-             tb_sys_role r
+             tb_sys_user u
         where user_name = #{userName}
-        and u.id = ur.user_id
-        and r.id = ur.role_id
+
     </select>
 </mapper>

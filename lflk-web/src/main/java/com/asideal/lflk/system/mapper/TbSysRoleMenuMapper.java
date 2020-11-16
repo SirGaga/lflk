@@ -2,6 +2,9 @@ package com.asideal.lflk.system.mapper;
 
 import com.asideal.lflk.system.entity.TbSysRoleMenu;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,5 +15,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2020-11-16
  */
 public interface TbSysRoleMenuMapper extends BaseMapper<TbSysRoleMenu> {
-
+    List<TbSysRoleMenu> selectByRoleIds(@Param("roleIds") List<Integer> roleIds);
 }
