@@ -16,7 +16,6 @@ import javax.sql.DataSource;
  * druid参数配置
  * @author Zhangjie
  * @since 2020-11-13
- * 孟天佑
  */
 @Configuration
 @PropertySource(value = "classpath:application.yml")
