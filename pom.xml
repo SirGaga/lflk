@@ -19,12 +19,13 @@
     <name>lflk</name>
     <description>Demo project for Spring Boot</description>
 
+    <!--孟天佑-->
     <properties>
         <java.version>1.8</java.version>
         <!--mybatis-plus-->
         <mybatis-plus.version>3.4.0</mybatis-plus.version>
         <!--swagger-->
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>2.7.0</swagger.version>
         <!--velocity模板引擎，用来生成mybatis的模板代码-->
         <velocity.version>2.2</velocity.version>
         <!--java连接mysql-->
