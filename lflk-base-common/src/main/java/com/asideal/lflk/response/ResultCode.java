@@ -47,6 +47,11 @@ public enum ResultCode implements CustomResultCode{
     DEPARTMENT_NOT_EXIST(3007, "部门不存在"),
     DEPARTMENT_ALREADY_EXIST(3008, "部门已存在"),
 
+    /*部门错误*/
+    ROLE_ADD_FAILURE(4001, "角色添加失败"),
+    ROLE_UPDATE_FAILURE(4002, "角色更新失败"),
+    ROLE_DELETE_FAILURE(4003, "角色删除失败"),
+
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
 
