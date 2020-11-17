@@ -49,11 +49,17 @@ public enum ResultCode implements CustomResultCode{
     DEPARTMENT_NOT_EXIST(3007, "部门不存在"),
     DEPARTMENT_ALREADY_EXIST(3008, "部门已存在"),
 
-    /*角色二错误*/
+    /*角色错误*/
     ROLE_ADD_FAILURE(4001, "角色添加失败"),
     ROLE_UPDATE_FAILURE(4002, "角色更新失败"),
     ROLE_DELETE_FAILURE(4003, "角色删除失败"),
     ROLE_NOT_ASSIGNED(4004, "角色未分派"),
+
+    /*菜单错误*/
+    MENU_ADD_FAILURE(5001, "菜单添加失败"),
+    MENU_UPDATE_FAILURE(5002, "菜单更新失败"),
+    MENU_DELETE_FAILURE(5003, "菜单删除失败"),
+    MENU_NOT_ASSIGNED(5004, "菜单未分派"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),

@@ -77,7 +77,7 @@ public class TbSysRoleController {
 
     @ApiOperation(value = "删除角色" ,notes = "根据角色id删除角色")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
+            @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer")
     })
     @DeleteMapping("/{id}")
     public Result deleteUserById(@PathVariable Integer id){
@@ -91,7 +91,7 @@ public class TbSysRoleController {
 
     @ApiOperation(value = "判断角色是否存在" ,notes = "根据角色英文判断角色是否存在")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
+            @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer")
     })
     @PostMapping("/exist")
     public Result roleExist(@RequestBody RoleVo roleVo){
