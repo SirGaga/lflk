@@ -73,6 +73,9 @@ public class TbSysUser implements Serializable {
     @ApiModelProperty(value = "用户密码 用户密码")
     private String password;
 
+    @ApiModelProperty(value = "用户密码 用户密码明文")
+    private String pwd;
+
     @ApiModelProperty(value = "部门编码 部门编码，遵守GAB规定")
     private String deptCode;
 

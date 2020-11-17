@@ -1,4 +1,4 @@
-package com.asideal.lflk.test.generator;
+package com.asideal.lflk.utils;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -12,4 +12,5 @@ public class Password {
     public static void main(String[] args) {
         System.out.println(QuickPassword("111111"));
     }
+
 }

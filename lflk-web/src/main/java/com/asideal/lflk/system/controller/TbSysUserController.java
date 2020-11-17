@@ -7,6 +7,7 @@ import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.service.TbSysUserService;
 import com.asideal.lflk.system.vo.UserVo;
+import com.asideal.lflk.utils.Password;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,6 +15,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +34,7 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/system/user")
 @CrossOrigin
+@Log4j2
 public class TbSysUserController {
 
     @Resource
@@ -76,6 +79,8 @@ public class TbSysUserController {
     })
     @PutMapping("/{id}")
     public Result updateUserById(@PathVariable Integer id, @RequestBody TbSysUser tbSysUser) {
+        log.info("更新用户===>用户id："+id);
+        tbSysUser.setPassword(Password.QuickPassword(tbSysUser.getPwd()));
         boolean b = tbSysUserService.updateById(tbSysUser);
         if (b) {
             return Result.ok().data("result", true);
@@ -87,6 +92,7 @@ public class TbSysUserController {
     @ApiOperation(value = "添加用户" ,notes = "根据用户实体添加用户")
     @PostMapping("/add")
     public Result saveUser(@RequestBody TbSysUser tbSysUser){
+        tbSysUser.setPassword(Password.QuickPassword(tbSysUser.getPwd()));
         boolean b = tbSysUserService.save(tbSysUser);
         if (b) {
             return Result.ok().data("result", true);
