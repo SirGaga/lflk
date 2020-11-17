@@ -50,6 +50,7 @@ public class TbSysRoleController {
         return Result.ok().data("total",rolePage.getTotal()).data("records",rolePage.getRecords());
     }
 
+    @ApiOperation(value = "新增角色", notes = "根据角色实体新增角色")
     @PostMapping("/add")
     public Result addRole(@RequestBody TbSysRole role){
         boolean b = tbSysRoleService.save(role);

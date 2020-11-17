@@ -2,6 +2,7 @@ package com.asideal.lflk.system.service;
 
 import com.asideal.lflk.system.entity.TbSysMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.stereotype.Service;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author ZhangJie
  * @since 2020-11-03
  */
+@Service
 public interface TbSysMenuService extends IService<TbSysMenu> {
 
 }

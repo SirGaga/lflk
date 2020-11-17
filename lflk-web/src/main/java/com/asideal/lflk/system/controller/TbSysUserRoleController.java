@@ -2,6 +2,7 @@ package com.asideal.lflk.system.controller;
 
 
 import cn.hutool.core.collection.CollUtil;
+import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysUserRole;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -37,7 +39,7 @@ public class TbSysUserRoleController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "Integer")
     })
-    @PostMapping({"/userId"})
+    @PostMapping({"/{userId}"})
     public Result getRolesByUserId(@PathVariable Integer userId){
         QueryWrapper<TbSysUserRole> sysUserRoleQueryWrapper = new QueryWrapper<>();
         sysUserRoleQueryWrapper.eq("user_id",userId);
@@ -69,16 +71,17 @@ public class TbSysUserRoleController {
     @PostMapping("/update")
     public Result update(@RequestBody List<TbSysUserRole> tbSysUserRoles){
 
-        // 批量保存
-        boolean b = tbSysUserRoleService.saveBatch(tbSysUserRoles);
-        if (b) {
-            return Result.ok().data("result",true);
-        }else {
-            return Result.error().code(ResultCode.USER_ROLE_ADD_FAILURE.getCode()).message(ResultCode.USER_ROLE_ADD_FAILURE.getMessage()).data("result",false);
+        boolean remove = tbSysUserRoleService.removeByIds(tbSysUserRoles.stream().map(TbSysUserRole::getId).collect(Collectors.toList()));
+        if (remove){
+            boolean b = tbSysUserRoleService.saveBatch(tbSysUserRoles);
+            if (b) {
+                return Result.ok().data("result",true);
+            }else {
+                throw new BusinessException(ResultCode.USER_ROLE_ADD_FAILURE.getCode(),ResultCode.USER_ROLE_ADD_FAILURE.getMessage());
+            }
+        } else {
+            throw new BusinessException(ResultCode.USER_ROLE_UPDATE_FAILURE.getCode(),ResultCode.USER_ROLE_UPDATE_FAILURE.getMessage());
         }
     }
-
-    // 删
-
 }
 

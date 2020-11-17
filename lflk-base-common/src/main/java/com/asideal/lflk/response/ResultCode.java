@@ -42,6 +42,7 @@ public enum ResultCode implements CustomResultCode{
     USER_ACCOUNT_ADD_FAILURE(2011, "账号添加失败"),
     USER_ACCOUNT_DELETE_FAILURE(2012, "账号删除失败"),
     USER_ROLE_ADD_FAILURE(2013, "用户角色添加失败"),
+    USER_ROLE_UPDATE_FAILURE(2014, "用户角色更新失败"),
 
 
     /*部门错误*/

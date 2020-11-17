@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2020-11-16
  */
 @RestController
-@RequestMapping("/system/tb-sys-role-menu")
+@RequestMapping("/system/roleMenu")
 public class TbSysRoleMenuController {
 
 }
