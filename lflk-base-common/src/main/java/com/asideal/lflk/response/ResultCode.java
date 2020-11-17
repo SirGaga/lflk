@@ -41,16 +41,18 @@ public enum ResultCode implements CustomResultCode{
     USER_ACCOUNT_UPDATE_FAILURE(2010, "账号更新失败"),
     USER_ACCOUNT_ADD_FAILURE(2011, "账号添加失败"),
     USER_ACCOUNT_DELETE_FAILURE(2012, "账号删除失败"),
+    USER_ROLE_ADD_FAILURE(2013, "用户角色添加失败"),
 
 
     /*部门错误*/
     DEPARTMENT_NOT_EXIST(3007, "部门不存在"),
     DEPARTMENT_ALREADY_EXIST(3008, "部门已存在"),
 
-    /*部门错误*/
+    /*角色二错误*/
     ROLE_ADD_FAILURE(4001, "角色添加失败"),
     ROLE_UPDATE_FAILURE(4002, "角色更新失败"),
     ROLE_DELETE_FAILURE(4003, "角色删除失败"),
+    ROLE_NOT_ASSIGNED(4004, "角色未分派"),
 
     /* 业务错误 */
     NO_PERMISSION(3001, "没有权限"),
