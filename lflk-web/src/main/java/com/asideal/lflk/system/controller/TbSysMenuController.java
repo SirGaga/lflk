@@ -43,7 +43,7 @@ public class TbSysMenuController {
         return Result.ok().data("result",true).data("records",list);
     }
 
-    @ApiOperation(value = "新增角色", notes = "根据角色实体新增角色")
+    @ApiOperation(value = "新增菜单", notes = "根据菜单实体新增菜单")
     @PostMapping("/add")
     public Result addMenu(@RequestBody TbSysMenu menu){
         boolean b = tbSysMenuService.save(menu);

@@ -46,8 +46,11 @@ public enum ResultCode implements CustomResultCode{
 
 
     /*部门错误*/
-    DEPARTMENT_NOT_EXIST(3007, "部门不存在"),
-    DEPARTMENT_ALREADY_EXIST(3008, "部门已存在"),
+    DEPARTMENT_NOT_EXIST(3001, "部门不存在"),
+    DEPARTMENT_ALREADY_EXIST(3002, "部门已存在"),
+    DEPARTMENT_UPDATE_FAILURE(3003, "部门更新失败"),
+    DEPARTMENT_ADD_FAILURE(3004, "部门更新失败"),
+    DEPARTMENT_DELETE_FAILURE(3005, "部门删除失败"),
 
     /*角色错误*/
     ROLE_ADD_FAILURE(4001, "角色添加失败"),
@@ -61,8 +64,13 @@ public enum ResultCode implements CustomResultCode{
     MENU_DELETE_FAILURE(5003, "菜单删除失败"),
     MENU_NOT_ASSIGNED(5004, "菜单未分派"),
 
+    /*菜单角色错误*/
+    ROLE_MENU_ADD_FAILURE(6001, "用户角色添加失败"),
+    ROLE_MENU_DELETE_FAILURE(6002, "用户角色删除失败"),
+
+
     /* 业务错误 */
-    NO_PERMISSION(3001, "没有权限"),
+    NO_PERMISSION(7001, "没有权限"),
 
     /*运行时异常*/
     ARITHMETIC_EXCEPTION(9001,"算数异常");

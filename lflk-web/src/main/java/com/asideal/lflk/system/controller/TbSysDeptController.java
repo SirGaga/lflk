@@ -1,16 +1,17 @@
 package com.asideal.lflk.system.controller;
 
 
+import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
+import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysDept;
 import com.asideal.lflk.system.service.TbSysDeptService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/system/dept")
 @CrossOrigin
+@Log4j2
 public class TbSysDeptController {
 
     @Resource
@@ -41,6 +43,58 @@ public class TbSysDeptController {
         List<TbSysDept> list = tbSysDeptService.list();
 
         return Result.ok().data("records",list);
+    }
+    @ApiOperation(value = "查询单个用户", notes = "通过用户id查询对应的用户信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
+    })
+    @GetMapping("/{id}")
+    public Result findDeptById(@PathVariable Integer id){
+        TbSysDept tbSysDept = tbSysDeptService.getById(id);
+        if (tbSysDept != null){
+            return Result.ok().data("result",true).data("records",tbSysDept);
+        } else {
+            throw new BusinessException(ResultCode.DEPARTMENT_NOT_EXIST.getCode(),ResultCode.DEPARTMENT_NOT_EXIST.getMessage());
+        }
+    }
+    @ApiOperation(value = "更新部门", notes = "根据部门的id和数据实体进行更新")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "部门id", required = true, dataType = "Integer")
+    })
+    @PutMapping("/{id}")
+    public Result updateDeptById(@PathVariable Integer id, @RequestBody TbSysDept tbSysDept) {
+        log.info("更新部门===>部门id："+id);
+        boolean b = tbSysDeptService.updateById(tbSysDept);
+        if (b) {
+            return Result.ok().data("result", true);
+        } else {
+            throw new BusinessException(ResultCode.DEPARTMENT_UPDATE_FAILURE.getCode(),ResultCode.DEPARTMENT_UPDATE_FAILURE.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "添加部门" ,notes = "根据部门实体添加部门")
+    @PostMapping("/add")
+    public Result saveUser(@RequestBody TbSysDept tbSysDept){
+        boolean b = tbSysDeptService.save(tbSysDept);
+        if (b) {
+            return Result.ok().data("result", true);
+        } else {
+            throw new BusinessException(ResultCode.DEPARTMENT_ADD_FAILURE.getCode(),ResultCode.DEPARTMENT_ADD_FAILURE.getMessage());
+        }
+    }
+
+    @ApiOperation(value = "删除部门" ,notes = "根据部门id删除部门")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
+    })
+    @DeleteMapping("/{id}")
+    public Result deleteDeptById(@PathVariable Integer id){
+        boolean b = tbSysDeptService.removeById(id);
+        if (b) {
+            return Result.ok().data("result", true);
+        } else {
+            throw new BusinessException(ResultCode.DEPARTMENT_DELETE_FAILURE.getCode(),ResultCode.DEPARTMENT_DELETE_FAILURE.getMessage());
+        }
     }
 }
 
