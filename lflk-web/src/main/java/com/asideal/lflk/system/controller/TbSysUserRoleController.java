@@ -69,6 +69,7 @@ public class TbSysUserRoleController {
     @PostMapping("/update")
     public Result update(@RequestBody List<TbSysUserRole> tbSysUserRoles){
 
+        // 批量保存
         boolean b = tbSysUserRoleService.saveBatch(tbSysUserRoles);
         if (b) {
             return Result.ok().data("result",true);
