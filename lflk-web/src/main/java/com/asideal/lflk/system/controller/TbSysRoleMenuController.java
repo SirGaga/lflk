@@ -48,9 +48,9 @@ public class TbSysRoleMenuController {
     }
     @ApiOperation(value = "根据角色id获取更新角色菜单", notes = "根据角色id更新角色菜单")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "String")
     })
-    @PostMapping("/{roleId}")
+    @PutMapping("/{roleId}")
     public Result updateRoleMenusByRoleId(@PathVariable Integer roleId, @RequestBody String menuIds) {
         QueryWrapper<TbSysRoleMenu> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("role_id",roleId);

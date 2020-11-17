@@ -2,6 +2,7 @@ package com.asideal.lflk.system.service;
 
 import com.asideal.lflk.system.entity.TbSysRoleMenu;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @author ZhangJie
  * @since 2020-11-16
  */
+@Service
 public interface TbSysRoleMenuService extends IService<TbSysRoleMenu> {
     List<TbSysRoleMenu> selectByRoleIds(List<Integer> roleIds);
 }
