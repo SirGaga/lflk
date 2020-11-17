@@ -1,6 +1,7 @@
 package com.asideal.lflk.system.controller;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
@@ -51,7 +52,7 @@ public class TbSysDeptController {
     @GetMapping("/{id}")
     public Result findDeptById(@PathVariable Integer id){
         TbSysDept tbSysDept = tbSysDeptService.getById(id);
-        if (tbSysDept != null){
+        if (ObjectUtil.isNotNull(tbSysDept)){
             return Result.ok().data("result",true).data("records",tbSysDept);
         } else {
             throw new BusinessException(ResultCode.DEPARTMENT_NOT_EXIST.getCode(),ResultCode.DEPARTMENT_NOT_EXIST.getMessage());

@@ -1,6 +1,7 @@
 package com.asideal.lflk.system.controller;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
@@ -67,7 +68,7 @@ public class TbSysUserController {
     @GetMapping("/{id}")
     public Result findUserById(@PathVariable Integer id){
         TbSysUser tbSysUser = tbSysUserService.getById(id);
-        if (tbSysUser != null){
+        if (ObjectUtil.isNotNull(tbSysUser)){
             return Result.ok().data("user",tbSysUser);
         } else {
             throw new BusinessException(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode(),ResultCode.USER_ACCOUNT_NOT_EXIST.getMessage());

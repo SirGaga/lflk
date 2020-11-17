@@ -71,9 +71,9 @@ public class TbSysUserRoleController {
     @PostMapping("/update")
     public Result update(@RequestBody List<TbSysUserRole> tbSysUserRoles){
 
-        boolean remove = tbSysUserRoleService.removeByIds(tbSysUserRoles.stream().map(TbSysUserRole::getId).collect(Collectors.toList()));
-        if (remove){
-            boolean b = tbSysUserRoleService.saveBatch(tbSysUserRoles);
+        boolean b = tbSysUserRoleService.removeByIds(tbSysUserRoles.stream().map(TbSysUserRole::getId).collect(Collectors.toList()));
+        if (b){
+            b = tbSysUserRoleService.saveBatch(tbSysUserRoles);
             if (b) {
                 return Result.ok().data("result",true);
             }else {
