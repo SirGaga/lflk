@@ -19,6 +19,7 @@
     <name>lflk</name>
     <description>Demo project for Spring Boot</description>
 
+    <!--孟天佑-->
     <properties>
         <java.version>1.8</java.version>
         <!--mybatis-plus-->
