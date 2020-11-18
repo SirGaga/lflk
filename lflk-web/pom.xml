@@ -17,7 +17,7 @@
             <artifactId>lflk-base-common</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
-        <!--
+        <!---->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
@@ -26,6 +26,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
         </dependency>
-        -->
+
     </dependencies>
 </project>

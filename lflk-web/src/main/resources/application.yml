@@ -1,7 +1,6 @@
 spring:
   application:
     name: lflk-web
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://47.92.145.11:3306/lflk?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8
@@ -38,6 +37,14 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  rabbitmq:
+    host: 192.168.109.121
+    port: 5672
+    username: guest
+    password: guest
+    virtual-host: /lflk
+    monitorPort: 15672
+
 
 server:
   port: 8081
