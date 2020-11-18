@@ -46,16 +46,10 @@ public class TbSysUserController {
      * @return List<TbSysUser> 返回用户列表
      */
     @ApiOperation(value = "用户列表", notes = "全量查询用户信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "current", value = "当前页", required = true, dataType = "Integer"),
-            @ApiImplicitParam(name = "size", value = "每页显示条数", required = true, dataType = "Integer")
-    })
     @PostMapping("/")
-    public Result findUserAll(@RequestParam(defaultValue = "1")Integer current,
-                              @RequestParam(defaultValue = "20")Integer size,
-                              @RequestBody UserVo userVo){
+    public Result findUserAll(@RequestBody UserVo userVo){
         // 对用户进行分页，泛型中注入的就是返回数据的实体
-        Page<TbSysUser> page = new Page<>(current,size);
+        Page<TbSysUser> page = new Page<>(userVo.getCurrent(),userVo.getSize());
         IPage<TbSysUser> userPage = tbSysUserService.page(page, getQueryWrapper(userVo));
 
         return Result.ok().data("total",userPage.getTotal()).data("records",userPage.getRecords());
