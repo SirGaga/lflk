@@ -26,12 +26,11 @@ public class JwtUser extends SelfUserDetails {
     }
 
     // 写一个能直接使用user创建jwtUser的构造器
-    public JwtUser(TbSysUser user,Collection<? extends GrantedAuthority> authorities,List<TbSysMenu> tbSysMenuList) {
+    public JwtUser(TbSysUser user,Collection<? extends GrantedAuthority> authorities) {
         id = user.getId();
         username = user.getUserName();
         password = user.getPassword();
         this.authorities = authorities;
-        this.tbSysMenuList = getTbSysMenuList();
     }
 
 

@@ -68,8 +68,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .anyRequest()
                 //任何请求,登录后可以访问
-                .permitAll()
-                //.access("@rbacauthorityservice.hasPermission(request,authentication)") // RBAC 动态 url 认证
+                //.permitAll()
+                .access("@rbacPermission.hasPermission(request,authentication)") // RBAC 动态 url 认证
                 .and()
                 .formLogin()  //开启登录, 定义当需要用户登录时候，转到的登录页面，
                 //.loginPage("/test/login.html") // 前后端分离的项目不需要开启此项

@@ -17,4 +17,6 @@ import java.util.List;
 @Service
 public interface TbSysRoleMenuService extends IService<TbSysRoleMenu> {
     List<TbSysRoleMenu> selectByRoleIds(List<Integer> roleIds);
+
+    List<TbSysRoleMenu> selectByRoleNames(List<String> roleNames);
 }

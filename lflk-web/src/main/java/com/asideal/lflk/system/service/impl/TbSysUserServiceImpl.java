@@ -1,6 +1,11 @@
 package com.asideal.lflk.system.service.impl;
 
-import com.asideal.lflk.system.entity.*;
+import cn.hutool.core.util.ObjectUtil;
+import com.asideal.lflk.handler.BusinessException;
+import com.asideal.lflk.response.ResultCode;
+import com.asideal.lflk.system.entity.TbSysRole;
+import com.asideal.lflk.system.entity.TbSysUser;
+import com.asideal.lflk.system.entity.TbSysUserRole;
 import com.asideal.lflk.system.mapper.TbSysUserMapper;
 import com.asideal.lflk.system.service.*;
 import com.asideal.lflk.system.vo.JwtUser;
@@ -45,25 +50,23 @@ public class TbSysUserServiceImpl extends ServiceImpl<TbSysUserMapper, TbSysUser
      * @throws UsernameNotFoundException
      */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) {
 
         TbSysUser user = this.baseMapper.getUserByUserName(username);
-        List<TbSysUserRole> sysUserRoles = tbSysUserRoleService.getTbSysUserRoleByUserId(user.getId());
-        // 根据角色id批量查询
-        List<TbSysRole> tbSysRoles = tbSysRoleService.getBaseMapper()
-                .selectBatchIds(
-                        sysUserRoles.stream().map(e -> e.getId()).collect(Collectors.toList())
-                );
+        if (ObjectUtil.isNotNull(user) ) {
+            List<TbSysUserRole> sysUserRoles = tbSysUserRoleService.getTbSysUserRoleByUserId(user.getId());
+            // 根据角色id批量查询
+            List<TbSysRole> tbSysRoles = tbSysRoleService.getBaseMapper()
+                    .selectBatchIds(
+                            sysUserRoles.stream().map(e -> e.getId()).collect(Collectors.toList())
+                    );
 
-        Set<SimpleGrantedAuthority> authorities = new HashSet<>();
-        tbSysRoles.forEach(e -> authorities.add(new SimpleGrantedAuthority(e.getRoleName())));
+            Set<SimpleGrantedAuthority> authorities = new HashSet<>();
+            tbSysRoles.forEach(e -> authorities.add(new SimpleGrantedAuthority(e.getRoleName())));
 
-        List<TbSysRoleMenu> tbSysRoleMenus = tbSysRoleMenuService.selectByRoleIds(sysUserRoles.stream().map(e -> e.getRoleId()).collect(Collectors.toList()));
-        List<TbSysMenu> tbSysMenus = tbSysMenuService.getBaseMapper().selectBatchIds(
-                tbSysRoleMenus.stream().map(e -> e.getId()).collect(Collectors.toList())
-        );
-
-
-        return new JwtUser(user,authorities,tbSysMenus);
+            return new JwtUser(user,authorities);
+        } else {
+            throw new BusinessException(ResultCode.ARITHMETIC_EXCEPTION.getCode(),ResultCode.ARITHMETIC_EXCEPTION.getMessage());
+        }
     }
 }

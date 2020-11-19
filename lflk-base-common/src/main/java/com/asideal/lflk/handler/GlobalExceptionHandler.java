@@ -3,6 +3,7 @@ package com.asideal.lflk.handler;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -54,6 +55,20 @@ public class GlobalExceptionHandler {
         return Result.error()
                 .message(ResultCode.PARAM_NOT_VALID.getMessage())
                 .code(ResultCode.PARAM_NOT_VALID.getCode());
+    }
+
+    /**
+     * 用户名密码错误
+     * @param e 运行时参数异常
+     * @return 返回具体错误码
+     */
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseBody
+    public Result error(UsernameNotFoundException e) {
+        log.error(e.getMessage());
+        return Result.error()
+                .message(ResultCode.USER_CREDENTIALS_ERROR.getMessage())
+                .code(ResultCode.USER_CREDENTIALS_ERROR.getCode());
     }
 
     /**

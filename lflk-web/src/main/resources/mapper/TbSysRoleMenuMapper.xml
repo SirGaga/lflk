@@ -8,4 +8,12 @@
             #{roleId}
         </foreach>
     </select>
+    <select id="selectByRoleNames"  resultType="TbSysRoleMenu">
+        select rm.* from tb_sys_role_menu  rm where rm.role_id in (
+            select r.id from tb_sys_role r where r.role_name in
+            <foreach collection="roleNames" item="roleName" open="(" close=")" separator=",">
+                #{roleName}
+            </foreach>
+        )
+    </select>
 </mapper>
