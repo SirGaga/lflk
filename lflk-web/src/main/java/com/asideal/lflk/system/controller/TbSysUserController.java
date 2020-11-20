@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
+import com.asideal.lflk.security.service.AuthenticationService;
 import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.service.TbSysUserService;
 import com.asideal.lflk.system.vo.UserVo;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -40,6 +42,16 @@ public class TbSysUserController {
 
     @Resource
     private TbSysUserService tbSysUserService;
+    @Resource
+    private AuthenticationService authenticationService;
+
+    @ApiOperation(value = "用户信息", notes = "根据用户登录的token获取用户信息")
+    @GetMapping("/info")
+    private Result getUserInfo(){
+        Authentication authentication = authenticationService.getAuthentication();
+        return Result.ok().data("data",authentication.getPrincipal());
+
+    }
 
     /**
      * 查询所有用户
