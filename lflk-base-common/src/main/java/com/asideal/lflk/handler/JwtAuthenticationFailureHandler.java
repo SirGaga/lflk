@@ -21,6 +21,6 @@ public class JwtAuthenticationFailureHandler implements AuthenticationFailureHan
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
-        ResponseUtils.responseResult(response,Result.error().code(ResultCode.USER_CREDENTIALS_ERROR.getCode()).message(ResultCode.USER_CREDENTIALS_EXPIRED.getMessage()));
+        ResponseUtils.responseResult(response,Result.error().code(ResultCode.USER_CREDENTIALS_ERROR.getCode()).message(ResultCode.USER_CREDENTIALS_ERROR.getMessage()));
     }
 }

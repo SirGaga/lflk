@@ -66,7 +66,7 @@ public class TbSysUserServiceImpl extends ServiceImpl<TbSysUserMapper, TbSysUser
 
             return new JwtUser(user,authorities);
         } else {
-            throw new BusinessException(ResultCode.ARITHMETIC_EXCEPTION.getCode(),ResultCode.ARITHMETIC_EXCEPTION.getMessage());
+            throw new BusinessException(ResultCode.USER_CREDENTIALS_ERROR.getCode(),ResultCode.USER_CREDENTIALS_ERROR.getMessage());
         }
     }
 }
