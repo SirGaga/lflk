@@ -20,7 +20,9 @@ public class Password {
     }
 
     public static void main(String[] args) {
-        System.out.println(QuickPassword("111111"));
+        String s = "/system";
+
+        System.out.println(s.substring(1).substring(0,1).toUpperCase()+s.substring(1).substring(1));
     }
 
 }

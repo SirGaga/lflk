@@ -7,6 +7,7 @@ import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysRoleMenu;
 import com.asideal.lflk.system.service.TbSysRoleMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -27,6 +28,8 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/system/roleMenu")
+@Api(value = "系统角色菜单管理模块",tags = "系统角色菜单接口")
+@CrossOrigin
 public class TbSysRoleMenuController {
     @Resource
     private TbSysRoleMenuService tbSysRoleMenuService;

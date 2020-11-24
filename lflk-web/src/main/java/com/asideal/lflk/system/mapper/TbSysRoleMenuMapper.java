@@ -17,5 +17,5 @@ import java.util.List;
 public interface TbSysRoleMenuMapper extends BaseMapper<TbSysRoleMenu> {
     List<TbSysRoleMenu> selectByRoleIds(@Param("roleIds") List<Integer> roleIds);
 
-    List<TbSysRoleMenu> selectByRoleNames(@Param("roleNames") List<String> selectByRoleNames);
+    List<TbSysRoleMenu> selectByRoleNames(@Param("roleNames") List<String> roleNames);
 }

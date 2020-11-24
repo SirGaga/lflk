@@ -33,7 +33,7 @@ public class TbSysMenu implements Serializable {
     private String menuName;
 
     @ApiModelProperty(value = "父级菜单id 父级菜单id")
-    private Integer pid;
+    private Integer parentId;
 
     @ApiModelProperty(value = "跳转url 跳转路径")
     private String url;
@@ -48,13 +48,13 @@ public class TbSysMenu implements Serializable {
     private String icon;
 
     @ApiModelProperty(value = "是否可用 0可用，1不可用")
-    private String disabled;
+    private Integer disabled;
 
     @ApiModelProperty(value = "是否打开 0不展开，1展开")
     private String open;
 
     @ApiModelProperty(value = "是否是子菜单 0代表不是子菜单，1代表是子菜单")
-    private Integer children;
+    private Integer child;
 
     @ApiModelProperty(value = "创建人id 创建人id")
     private Integer createUserId;
@@ -87,7 +87,7 @@ public class TbSysMenu implements Serializable {
     private String path;
 
     @ApiModelProperty(value = "固钉，0代表不是固钉，1代表是固钉")
-    private String affix;
+    private Integer affix;
 
 
 }
