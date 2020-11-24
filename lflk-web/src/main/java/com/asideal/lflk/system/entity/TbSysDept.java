@@ -1,13 +1,14 @@
 package com.asideal.lflk.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -25,8 +26,8 @@ public class TbSysDept implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value = "部门编号 部门编号")
-    @TableId(value = "dept_id", type = IdType.AUTO)
-    private Integer deptId;
+    @TableId(value = "id", type = IdType.AUTO)
+    private Integer id;
 
     @ApiModelProperty(value = "部门编码 部门编码")
     private String deptCode;
@@ -35,13 +36,13 @@ public class TbSysDept implements Serializable {
     private String deptName;
 
     @ApiModelProperty(value = "父部门编号 父部门编号")
-    private Integer deptParentId;
+    private Integer parentId;
 
     @ApiModelProperty(value = "父部门编码 父部门编码")
-    private String deptParentCode;
+    private String parentCode;
 
     @ApiModelProperty(value = "父部门名称 父部门名称")
-    private String deptParentName;
+    private String parentName;
 
     @ApiModelProperty(value = "创建人id 创建人id")
     private Integer createUserId;
