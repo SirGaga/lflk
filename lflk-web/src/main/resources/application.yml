@@ -1,53 +1,83 @@
+server:
+  port: 8081
+
 spring:
+  profiles:
+    active: dev
   application:
     name: lflk-web
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.92.145.11:3306/lflk?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8
-    username: root
-    password: 123456
-    type: com.alibaba.druid.pool.DruidDataSource
-    #监控统计拦截的filters
-    filters: stat,wall,log4j2
-    #druid配置
-    #配置初始化大小/最小/最大
-    initialSize: 5
-    minIdle: 5
-    maxActive: 20
-    #获取连接等待超时时间
-    maxWait: 60000
-    #间隔多久进行一次检测，检测需要关闭的空闲连接
-    timeBetweenEvictionRunsMillis: 60000
-    #一个连接在池中最小生存的时间
-    minEvictableIdleTimeMillis: 300000
-    validationQuery: SELECT 1 FROM DUAL
-    testWhileIdle: true
-    testOnBorrow: false
-    testOnReturn: false
-    #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
-    poolPreparedStatements: false
-    maxPoolPreparedStatementPerConnectionSize: 20
-    # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
-    connectionProperties:
+    dynamic:
+      primary: master
+      datasource:
+        master:
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          url: jdbc:mysql://47.92.145.11:3306/lflk?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8
+          username: root
+          password: 123456
       druid:
-        stat:
-          mergeSql: true
-          slowSqlMillis: 5000
-
-  jackson:
-    date-format: yyyy-MM-dd HH:mm:ss
-    time-zone: GMT+8
+        type: com.alibaba.druid.pool.DruidDataSource
+          #监控统计拦截的filters
+        filters: stat,wall,log4j2
+        #druid配置
+        #配置初始化大小/最小/最大
+        initialSize: 5
+        minIdle: 5
+        maxActive: 20
+        #获取连接等待超时时间
+        maxWait: 60000
+        #间隔多久进行一次检测，检测需要关闭的空闲连接
+        timeBetweenEvictionRunsMillis: 60000
+        #一个连接在池中最小生存的时间
+        minEvictableIdleTimeMillis: 300000
+        validationQuery: SELECT 1 FROM DUAL
+        testWhileIdle: true
+        testOnBorrow: false
+        testOnReturn: false
+        #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
+        poolPreparedStatements: false
+        maxPoolPreparedStatementPerConnectionSize: 20
+        # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+        connectionProperties:
+          druid:
+            stat:
+              mergeSql: true
+              slowSqlMillis: 5000
   rabbitmq:
-    host: 192.168.109.121
+    host: 47.92.145.11
     port: 5672
     username: guest
     password: guest
     virtual-host: /lflk
     monitorPort: 15672
+    ## 消费端配置https://blog.csdn.net/en_joker/article/details/80103519
+    listener:
+      simple:
+        # 每次从RabbitMQ获取的消息数量
+        prefetch: 1
+        # 拒绝的消息是否重新排队（重试次数超过上面的设置之后是否丢弃)---测试下来没差别，消息都会到deadLetterQueue中，具体不了解
+        default-requeue-rejected: false
+        # 每个队列启动的消费者数量
+        concurrency: 1
+        # 每个队列最大的消费者数量
+        max-concurrency: 1
+        # 手动签收ACK-那么需要在代码中手动设置ACK
+        acknowledge-mode: auto
+        retry:
+          enabled: true
+          # 第一次尝试时间间隔
+          initial-interval: 4S
+          # 两次尝试之间的最长持续时间。
+          max-interval: 4S
+          # 最大重试次数
+          max-attempts: 5
+          # 上一次重试时间的乘数
+          multiplier: 1.0
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
 
 
-server:
-  port: 8081
 
 mybatis-plus:
   configuration:
@@ -69,4 +99,21 @@ jwt:
   # 令牌过期时间 此处单位/毫秒
   token-validity-in-seconds: 14400000
 
+app:
+  rabbitmq:
+    # 队列定义
+    queue:
+      # 正常接收阿里消息队列名称
+      ali2me-normal-queue: ali2me-normal-queue
+      # 死信队列（接收阿里消息队列处理有异常的队列名称）
+      ali2me-fail-queue: ali2me-fail-queue
+    # 交换机定义
+    exchange:
+      # 正常业务交换机
+      ali2me-normal-exchange: ali2me-normal-exchange
+      # 死信交换机
+      ali2me-fail-exchange: ali2me-fail-exchange
+    key:
+      ali2me-normal-routing-key: ali2me
+      ali2me-fail-routing-key: ali2me-fail-routing-key
 
