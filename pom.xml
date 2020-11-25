@@ -48,12 +48,16 @@
         <spring-web-version>2.3.5.RELEASE</spring-web-version>
         <!--spring-boot-->
         <spring-boot-version>2.3.5.RELEASE</spring-boot-version>
+        <!--spring-boot-amqp-->
+        <spring-boot-amqp-version>2.3.5.RELEASE</spring-boot-amqp-version>
         <!--hutool工具类-->
         <hutool.version>5.4.7</hutool.version>
         <!--druid-->
         <druid-version>1.2.3</druid-version>
         <!--fastjson-->
         <fastjson-version>1.2.73</fastjson-version>
+        <!--dynamic-datasource-->
+        <dynamic.datasource.version>3.2.1</dynamic.datasource.version>
     </properties>
     <dependencyManagement>
         <!--    SpringBoot测试依赖    -->
@@ -182,6 +186,16 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>fastjson</artifactId>
                 <version>${fastjson-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>${dynamic.datasource.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-amqp</artifactId>
+                <version>${spring-boot-amqp-version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
