@@ -11,6 +11,6 @@
             #{roleName}
         </foreach>
             )
-        ) and component is not null
+        ) and component is not null and disabled = '0'
     </select>
 </mapper>

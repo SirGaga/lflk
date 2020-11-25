@@ -1,10 +1,12 @@
 package com.asideal.lflk.system.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value="组件meta属性", description="组件中meta属性设置")
 public class MetaVo {
     @ApiModelProperty(value = "页面title")

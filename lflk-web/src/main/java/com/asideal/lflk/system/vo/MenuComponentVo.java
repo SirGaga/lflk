@@ -1,11 +1,13 @@
 package com.asideal.lflk.system.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @ApiModel(value="菜单组件对象", description="将菜单信息转成菜单组件信息")
 public class MenuComponentVo {
@@ -59,6 +61,6 @@ public class MenuComponentVo {
     private List<MenuComponentVo> children;
 
     @ApiModelProperty(value = "组件Meta属性")
-    private MetaVo metaVo;
+    private MetaVo meta;
 
 }

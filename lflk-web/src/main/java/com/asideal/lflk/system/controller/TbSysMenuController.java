@@ -8,6 +8,7 @@ import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysMenu;
 import com.asideal.lflk.system.service.TbSysMenuService;
+import com.asideal.lflk.system.vo.ComponentVo;
 import com.asideal.lflk.system.vo.MenuComponentVo;
 import com.asideal.lflk.system.vo.MetaVo;
 import io.swagger.annotations.Api;
@@ -49,7 +50,6 @@ public class TbSysMenuController {
             Map<Integer,List<MenuComponentVo>> pidListMap =
                     voList.stream().collect(Collectors.groupingBy(MenuComponentVo::getParentId));
             voList.stream().forEach(item->item.setChildren(pidListMap.get(item.getId())));
-            System.out.println(pidListMap.get(0));
             pidListMap.get(0).forEach(e -> {
                 MetaVo metaVo = new MetaVo();
                 String component = e.getComponent();
@@ -58,28 +58,40 @@ public class TbSysMenuController {
                     e.setRedirect(e.getPath()+suffix);
                     String extraName = e.getPath().substring(1).substring(0, 1).toUpperCase() + e.getPath().substring(1).substring(1);
                     e.setName(extraName);
-                    metaVo.setTitle(extraName);
-                    metaVo.setIcon(e.getIcon());
-                    metaVo.setAffix(e.getAffix() == 1);
-
-                } else {
-
-                    e.setComponent("Layout");
-                    e.setRedirect(component);
-                    List<MenuComponentVo> childrenList = new ArrayList<>();
-                    MenuComponentVo children = new MenuComponentVo();
-                    children.setPath(component);
-                    children.setComponent(component+"/index");
                     metaVo.setTitle(e.getMenuName());
                     metaVo.setIcon(e.getIcon());
                     metaVo.setAffix(e.getAffix() == 1);
-                    children.setMetaVo(metaVo);
+                    e.setMeta(metaVo);
+                    e.getChildren().forEach(c -> {
+                        MetaVo metaVoChild = new MetaVo();
+                        metaVoChild.setTitle(c.getMenuName());
+                        metaVoChild.setIcon(c.getIcon());
+                        metaVoChild.setAffix(c.getAffix() == 1);
+                        c.setMeta(metaVoChild);
+                        String cPath = c.getPath().substring(1);
+                        c.setPath(cPath);
+                        c.setComponent(cPath + "/index");
+                        c.setName(cPath.substring(0,1).toUpperCase() + cPath.substring(1));
+                    });
+                } else {
+                    e.setName(component.substring(0,1).toUpperCase() + component.substring(1));
+                    e.setComponent("Layout");
+                    e.setRedirect(component.startsWith("/")?component:"/"+component);
+                    List<MenuComponentVo> childrenList = new ArrayList<>();
+                    MenuComponentVo children = new MenuComponentVo();
+                    children.setPath(component);
+                    children.setComponent(component + "/index");
+                    metaVo.setTitle(e.getMenuName());
+                    metaVo.setIcon(e.getIcon());
+                    metaVo.setAffix(e.getAffix() == 1);
+                    children.setMeta(metaVo);
                     childrenList.add(children);
                     e.setChildren(childrenList);
                 }
             });
+            List<ComponentVo> componentList = JSON.parseArray(JSON.toJSONString(pidListMap.get(0)), ComponentVo.class);
             //取出顶层节点的对象，数据库中的顶层节点的"ParentId"为0,注意是ParentId
-            return Result.ok().data("result",true).data("records",voList);
+            return Result.ok().data("result",true).data("records",JSON.toJSON(componentList));
         } else {
             return Result.error()
                     .code(ResultCode.MENU_COMPONENT_NOT_ASSIGNED.getCode())
