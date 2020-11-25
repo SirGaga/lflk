@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
+import com.asideal.lflk.security.service.AuthenticationService;
 import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.service.TbSysUserService;
 import com.asideal.lflk.system.vo.UserVo;
@@ -19,6 +20,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -40,22 +42,26 @@ public class TbSysUserController {
 
     @Resource
     private TbSysUserService tbSysUserService;
+    @Resource
+    private AuthenticationService authenticationService;
+
+    @ApiOperation(value = "用户信息", notes = "根据用户登录的token获取用户信息")
+    @GetMapping("/info")
+    private Result getUserInfo(){
+        Authentication authentication = authenticationService.getAuthentication();
+        return Result.ok().data("data",authentication.getPrincipal());
+
+    }
 
     /**
      * 查询所有用户
      * @return List<TbSysUser> 返回用户列表
      */
     @ApiOperation(value = "用户列表", notes = "全量查询用户信息")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "current", value = "当前页", required = true, dataType = "Integer"),
-            @ApiImplicitParam(name = "size", value = "每页显示条数", required = true, dataType = "Integer")
-    })
     @PostMapping("/")
-    public Result findUserAll(@RequestParam(defaultValue = "1")Integer current,
-                              @RequestParam(defaultValue = "20")Integer size,
-                              @RequestBody UserVo userVo){
+    public Result findUserAll(@RequestBody UserVo userVo){
         // 对用户进行分页，泛型中注入的就是返回数据的实体
-        Page<TbSysUser> page = new Page<>(current,size);
+        Page<TbSysUser> page = new Page<>(userVo.getCurrent(),userVo.getSize());
         IPage<TbSysUser> userPage = tbSysUserService.page(page, getQueryWrapper(userVo));
 
         return Result.ok().data("total",userPage.getTotal()).data("records",userPage.getRecords());

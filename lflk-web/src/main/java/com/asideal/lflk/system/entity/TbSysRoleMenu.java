@@ -2,11 +2,12 @@ package com.asideal.lflk.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -32,6 +33,9 @@ public class TbSysRoleMenu implements Serializable {
 
     @ApiModelProperty(value = "菜单id")
     private Integer menuId;
+
+    @ApiModelProperty(value = "是否删除 是否删除，0逻辑未删除，1逻辑已删除")
+    private Integer deleted;
 
 
 }

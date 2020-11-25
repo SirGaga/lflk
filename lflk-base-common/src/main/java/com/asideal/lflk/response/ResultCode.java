@@ -62,7 +62,8 @@ public enum ResultCode implements CustomResultCode{
     MENU_ADD_FAILURE(5001, "菜单添加失败"),
     MENU_UPDATE_FAILURE(5002, "菜单更新失败"),
     MENU_DELETE_FAILURE(5003, "菜单删除失败"),
-    MENU_NOT_ASSIGNED(5004, "菜单未分派"),
+    MENU_COMPONENT_NOT_ASSIGNED(5004, "菜单角色未分派"),
+    MENU_NOT_ASSIGNED(5005, "菜单未分派"),
 
     /*菜单角色错误*/
     ROLE_MENU_ADD_FAILURE(6001, "用户角色添加失败"),

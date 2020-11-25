@@ -3,6 +3,7 @@ package com.asideal.lflk.config;
 import com.asideal.lflk.filter.JwtAuthenticationTokenFilter;
 import com.asideal.lflk.handler.*;
 import com.asideal.lflk.system.service.TbSysUserService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -13,6 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.annotation.Resource;
 
@@ -46,6 +50,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter; // JWT 拦截器
 
+    @Resource
+    CorsConfigurationSource corsConfigurationSource;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 加入自定义的安全认证
@@ -56,8 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        // 去掉 CSRF
-        http.csrf().disable()
+        // 允许跨域并去掉 CSRF
+        http.cors().configurationSource(corsConfigurationSource).and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 使用 JWT，关闭token
                 .and()
 
@@ -68,8 +75,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .anyRequest()
                 //任何请求,登录后可以访问
-                .permitAll()
-                //.access("@rbacauthorityservice.hasPermission(request,authentication)") // RBAC 动态 url 认证
+                //.permitAll()
+                .access("@rbacPermission.hasPermission(request,authentication)") // RBAC 动态 url 认证
                 .and()
                 .formLogin()  //开启登录, 定义当需要用户登录时候，转到的登录页面，
                 //.loginPage("/test/login.html") // 前后端分离的项目不需要开启此项
@@ -99,7 +106,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v2/**")
                 .antMatchers("/v2/api-docs-ext/**")
                 .antMatchers("/swagger-resources/**")
-                .antMatchers("/doc.html");
+                .antMatchers("/doc.html")
+                .antMatchers("/system/user/info");
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfigurationSource source =   new UrlBasedCorsConfigurationSource();
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        corsConfiguration.addAllowedOrigin("*");    //同源配置，*表示任何请求都视为同源，若需指定ip和端口可以改为如“localhost：8080”，多个以“，”分隔；
+        corsConfiguration.addAllowedHeader("*"); // header，允许哪些header，本案中使用的是token，此处可将*替换为token；
+        corsConfiguration.addAllowedMethod("*");    //允许的请求方法，POST、GET等
+        ((UrlBasedCorsConfigurationSource) source).registerCorsConfiguration("/**",corsConfiguration); //配置允许跨域访问的url
+        return source;
     }
 
 }

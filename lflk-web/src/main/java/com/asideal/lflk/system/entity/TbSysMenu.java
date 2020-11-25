@@ -1,13 +1,14 @@
 package com.asideal.lflk.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -32,7 +33,7 @@ public class TbSysMenu implements Serializable {
     private String menuName;
 
     @ApiModelProperty(value = "父级菜单id 父级菜单id")
-    private Integer pid;
+    private Integer parentId;
 
     @ApiModelProperty(value = "跳转url 跳转路径")
     private String url;
@@ -46,14 +47,14 @@ public class TbSysMenu implements Serializable {
     @ApiModelProperty(value = "图标样式 内联样式")
     private String icon;
 
-    @ApiModelProperty(value = "是否可用 0不可用，1可用")
-    private String disabled;
+    @ApiModelProperty(value = "是否可用 0可用，1不可用")
+    private Integer disabled;
 
     @ApiModelProperty(value = "是否打开 0不展开，1展开")
     private String open;
 
-    @ApiModelProperty(value = "子菜单 子菜单")
-    private String children;
+    @ApiModelProperty(value = "是否是子菜单 0代表不是子菜单，1代表是子菜单")
+    private Integer child;
 
     @ApiModelProperty(value = "创建人id 创建人id")
     private Integer createUserId;
@@ -75,6 +76,18 @@ public class TbSysMenu implements Serializable {
 
     @ApiModelProperty(value = "是否删除，0代表逻辑未删除（默认值），1代表逻辑已删除")
     private Integer deleted;
+
+    @ApiModelProperty(value = "是否隐藏，是否隐藏，0代表不隐藏，1代表隐藏")
+    private Integer hidden;
+
+    @ApiModelProperty(value = "是否隐藏，是否隐藏，0代表不隐藏，1代表隐藏")
+    private String component;
+
+    @ApiModelProperty(value = "前端路径")
+    private String path;
+
+    @ApiModelProperty(value = "固钉，0代表不是固钉，1代表是固钉")
+    private Integer affix;
 
 
 }

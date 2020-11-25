@@ -2,6 +2,7 @@ package com.asideal.lflk.handler;
 
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
+import com.asideal.lflk.utils.response.ResponseUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -21,6 +22,7 @@ public class JwtLogoutSuccessHandler implements LogoutSuccessHandler {
     @Override
     public void onLogoutSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
 
-        httpServletResponse.getWriter().write(Result.ok().data("result", ResultCode.USER_LOGOUT_SUCCESS.getMessage()).toString());
+        //Result.ok().data("result", ResultCode.USER_LOGOUT_SUCCESS.getMessage()).toString()
+        ResponseUtils.responseResult(httpServletResponse,Result.ok().message(ResultCode.USER_LOGOUT_SUCCESS.getMessage()));
     }
 }

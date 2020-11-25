@@ -34,5 +34,7 @@ public class TbSysUserRole implements Serializable {
     @ApiModelProperty(value = "角色id")
     private Integer roleId;
 
+    @ApiModelProperty(value = "是否删除 是否删除，0逻辑未删除，1逻辑已删除")
+    private Integer deleted;
 
 }

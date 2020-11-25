@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asideal.lflk.system.mapper.TbSysMenuMapper">
-
+    <select id="getComponentByRoleNames" resultType="TbSysMenu">
+        select * from tb_sys_menu where id in (
+            select menu_id
+            from tb_sys_role_menu
+            where role_id in (
+                select id from tb_sys_role where role_name in
+        <foreach collection="roleNames" item="roleName" open="(" close=")" separator=",">
+            #{roleName}
+        </foreach>
+            )
+        ) and component is not null
+    </select>
 </mapper>
