@@ -9,8 +9,8 @@ import lombok.Data;
 @ApiModel(value="用户查询对象", description="用户查询对象")
 public class UserVo {
 
-    @ApiModelProperty(value = "姓名 真实姓名")
-    private String realName;
+    @ApiModelProperty(value = "用户名，真实姓名")
+    private String userOrRealName;
 
     @ApiModelProperty(value = "警号 警号")
     private String jh;
@@ -26,9 +26,6 @@ public class UserVo {
 
     @ApiModelProperty(value = "是否可用，0不可用，1可用")
     private Integer status;
-
-    @ApiModelProperty(value = "用户名")
-    private Integer userName;
 
     @ApiModelProperty(value = "当前页")
     private Integer current;

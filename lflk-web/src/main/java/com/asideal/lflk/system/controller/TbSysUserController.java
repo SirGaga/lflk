@@ -5,7 +5,6 @@ import cn.hutool.core.util.ObjectUtil;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
-import com.asideal.lflk.security.service.AuthenticationService;
 import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.service.TbSysUserService;
 import com.asideal.lflk.system.vo.UserVo;
@@ -20,7 +19,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -42,16 +40,6 @@ public class TbSysUserController {
 
     @Resource
     private TbSysUserService tbSysUserService;
-    @Resource
-    private AuthenticationService authenticationService;
-
-    @ApiOperation(value = "用户信息", notes = "根据用户登录的token获取用户信息")
-    @GetMapping("/info")
-    private Result getUserInfo(){
-        Authentication authentication = authenticationService.getAuthentication();
-        return Result.ok().data("data",authentication.getPrincipal());
-
-    }
 
     /**
      * 查询所有用户
@@ -121,6 +109,23 @@ public class TbSysUserController {
             throw new BusinessException(ResultCode.USER_ACCOUNT_DELETE_FAILURE.getCode(),ResultCode.USER_ACCOUNT_DELETE_FAILURE.getMessage());
         }
     }
+    @ApiOperation(value = "监测用户名是否重复" ,notes = "根据用户填写的用户名进行校验")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String")
+    })
+    @GetMapping("/checkUserName")
+    public Result checkUserName(@RequestParam String userName){
+
+        QueryWrapper<TbSysUser> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name", userName);
+        int count = tbSysUserService.count(queryWrapper);
+        return count > 0 ?
+                Result.ok()
+                        .success(false)
+                        .message(ResultCode.USER_ACCOUNT_ALREADY_EXIST.getMessage())
+                : Result.ok().success(true);
+
+    }
 
     public QueryWrapper<TbSysUser> getQueryWrapper(UserVo userVo){
         QueryWrapper<TbSysUser> queryWrapper = new QueryWrapper<>();
@@ -138,8 +143,8 @@ public class TbSysUserController {
                 queryWrapper.like("jh",userVo.getJh());
             }
             // 判断用户姓名
-            if (StringUtils.isNotEmpty(userVo.getRealName())){
-                queryWrapper.like("real_name",userVo.getRealName());
+            if (StringUtils.isNotEmpty(userVo.getUserOrRealName())){
+                queryWrapper.like("real_name",userVo.getUserOrRealName()).or().like("user_name",userVo.getUserOrRealName());
             }
             // 判断用户状态
             if (ObjectUtils.isNotEmpty(userVo.getStatus())){
