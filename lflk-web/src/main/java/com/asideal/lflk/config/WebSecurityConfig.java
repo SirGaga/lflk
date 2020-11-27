@@ -108,7 +108,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-resources/**")
                 .antMatchers("/doc.html")
                 .antMatchers("/userInfo")
-                .antMatchers("/components");
+                .antMatchers("/components")
+                .antMatchers("/validate/**");
     }
 
     @Bean

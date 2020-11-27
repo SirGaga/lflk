@@ -32,7 +32,7 @@ public enum ResultCode implements CustomResultCode{
     USER_NOT_LOGIN(2001, "用户未登录"),
     USER_ACCOUNT_EXPIRED(2002, "账号已过期"),
     USER_CREDENTIALS_ERROR(2003, "用户/密码错误"),
-    USER_CREDENTIALS_EXPIRED(2004, "密码过期"),
+    USER_GMSFHM_ALREADY_EXIST(2004, "公民身份号码已存在"),
     USER_ACCOUNT_DISABLE(2005, "账号不可用"),
     USER_ACCOUNT_LOCKED(2006, "账号被锁定"),
     USER_ACCOUNT_NOT_EXIST(2007, "账号不存在"),

@@ -1,15 +1,18 @@
 package com.asideal.lflk.system.controller;
 
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
+import com.asideal.lflk.security.service.AuthenticationService;
 import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.service.TbSysUserService;
 import com.asideal.lflk.system.vo.UserVo;
 import com.asideal.lflk.utils.Password;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -19,9 +22,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Calendar;
 
 /**
  * <p>
@@ -40,6 +45,8 @@ public class TbSysUserController {
 
     @Resource
     private TbSysUserService tbSysUserService;
+    @Resource
+    private AuthenticationService authenticationService;
 
     /**
      * 查询所有用户
@@ -72,7 +79,7 @@ public class TbSysUserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
     })
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public Result updateUserById(@PathVariable Integer id, @RequestBody TbSysUser tbSysUser) {
         log.info("更新用户===>用户id："+id);
         tbSysUser.setPassword(Password.QuickPassword(tbSysUser.getPwd()));
@@ -85,12 +92,21 @@ public class TbSysUserController {
     }
 
     @ApiOperation(value = "添加用户" ,notes = "根据用户实体添加用户")
-    @PostMapping("/add")
+    @PostMapping("/save")
     public Result saveUser(@RequestBody TbSysUser tbSysUser){
+        // 保存数据前数据准备
         tbSysUser.setPassword(Password.QuickPassword(tbSysUser.getPwd()));
+        Authentication authentication = authenticationService.getAuthentication();
+        TbSysUser operateUser = tbSysUserService.getOne(new LambdaUpdateWrapper<TbSysUser>().eq(TbSysUser::getUserName, authentication.getName()));
+        tbSysUser.setCreateTime(DateUtil.date(Calendar.getInstance()));
+        tbSysUser.setCreateUserId(operateUser.getId());
+        tbSysUser.setCreateUserName(operateUser.getUserName());
+        tbSysUser.setUpdateTime(DateUtil.date(Calendar.getInstance()));
+        tbSysUser.setUpdateUserId(operateUser.getId());
+        tbSysUser.setUpdateUserName(operateUser.getUserName());
         boolean b = tbSysUserService.save(tbSysUser);
         if (b) {
-            return Result.ok().data("result", true);
+            return Result.ok().success(true);
         } else {
             throw new BusinessException(ResultCode.USER_ACCOUNT_ADD_FAILURE.getCode(),ResultCode.USER_ACCOUNT_ADD_FAILURE.getMessage());
         }
@@ -100,7 +116,7 @@ public class TbSysUserController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public Result deleteUserById(@PathVariable Integer id){
         boolean b = tbSysUserService.removeById(id);
         if (b) {
@@ -108,23 +124,6 @@ public class TbSysUserController {
         } else {
             throw new BusinessException(ResultCode.USER_ACCOUNT_DELETE_FAILURE.getCode(),ResultCode.USER_ACCOUNT_DELETE_FAILURE.getMessage());
         }
-    }
-    @ApiOperation(value = "监测用户名是否重复" ,notes = "根据用户填写的用户名进行校验")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String")
-    })
-    @GetMapping("/checkUserName")
-    public Result checkUserName(@RequestParam String userName){
-
-        QueryWrapper<TbSysUser> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_name", userName);
-        int count = tbSysUserService.count(queryWrapper);
-        return count > 0 ?
-                Result.ok()
-                        .success(false)
-                        .message(ResultCode.USER_ACCOUNT_ALREADY_EXIST.getMessage())
-                : Result.ok().success(true);
-
     }
 
     public QueryWrapper<TbSysUser> getQueryWrapper(UserVo userVo){

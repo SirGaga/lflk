@@ -62,7 +62,7 @@ public class TbSysUser implements Serializable {
     private Date createTime;
 
     @ApiModelProperty(value = "更新人id 更新人id")
-    private String updateUserId;
+    private Integer updateUserId;
 
     @ApiModelProperty(value = "更新人姓名 更新人姓名")
     private String updateUserName;

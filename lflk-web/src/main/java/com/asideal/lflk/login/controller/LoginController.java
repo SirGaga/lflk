@@ -2,15 +2,20 @@ package com.asideal.lflk.login.controller;
 
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.security.service.AuthenticationService;
 import com.asideal.lflk.system.entity.TbSysMenu;
+import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.service.TbSysMenuService;
+import com.asideal.lflk.system.service.TbSysUserService;
 import com.asideal.lflk.system.vo.ComponentVo;
 import com.asideal.lflk.system.vo.MenuComponentVo;
 import com.asideal.lflk.system.vo.MetaVo;
+import com.asideal.lflk.utils.IpUtils;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
@@ -18,19 +23,19 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * <p>
- * 用户表  前端控制器
- * </p>
+ * 系统登录控制器
  *
  * @author ZhangJie
- * @since 2020-11-03
+ * @since 2020-11-26
  */
-@Api(value = "系统用户管理模块",tags = "系统用户接口")
+@Api(value = "系统登录管理模块",tags = "系统登录接口")
 @RestController
 @CrossOrigin
 @Log4j2
@@ -42,11 +47,27 @@ public class LoginController {
     @Resource
     private AuthenticationService authenticationService;
 
+    @Resource
+    private TbSysUserService tbSysUserService;
+
     @ApiOperation(value = "用户信息", notes = "根据用户登录的token获取用户信息")
     @GetMapping("/userInfo")
-    private Result getUserInfo(){
+    private Result getUserInfo(HttpServletRequest request){
         Authentication authentication = authenticationService.getAuthentication();
-        return Result.ok().data("data",authentication.getPrincipal());
+        TbSysUser tbSysUser = tbSysUserService.getOne(new LambdaUpdateWrapper<TbSysUser>().eq(TbSysUser::getUserName, authentication.getName()));
+        LambdaUpdateWrapper<TbSysUser> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
+        lambdaUpdateWrapper.eq(TbSysUser::getUserName,tbSysUser.getUserName())
+                // 获取ip地址
+                .set(TbSysUser::getLastLoginIp,IpUtils.getIpAddr(request))
+                // 获取更新事件
+                .set(TbSysUser::getUpdateTime, DateUtil.date(Calendar.getInstance()))
+                // 获取更新用户
+                .set(TbSysUser::getUpdateUserName,tbSysUser.getUserName())
+                // 获取更新用户id
+                .set(TbSysUser::getUpdateUserId,tbSysUser.getId());
+        tbSysUserService.update(lambdaUpdateWrapper);
+        Object principal = authentication.getPrincipal();
+        return Result.ok().data("data",principal);
     }
 
 
