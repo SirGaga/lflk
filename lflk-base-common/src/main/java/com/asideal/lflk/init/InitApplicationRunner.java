@@ -17,7 +17,7 @@ public class InitApplicationRunner implements ApplicationRunner {
         log.info("-------------初始化start-------------");
         //动态创建数据源
         log.info("动态创建数据源");
-        dynamicDatasource.createNewDataSource();
+        //dynamicDatasource.createNewDataSource();
         log.info("-------------初始化end-------------");
     }
 }

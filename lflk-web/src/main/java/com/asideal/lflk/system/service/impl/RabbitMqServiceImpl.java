@@ -1,5 +1,6 @@
 package com.asideal.lflk.system.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.asideal.lflk.system.entity.TbMessage;
 import com.asideal.lflk.system.mapper.TbMessageMapper;
 import com.asideal.lflk.system.service.RabbitMqService;
@@ -7,11 +8,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @Log4j2
@@ -30,7 +35,10 @@ public class RabbitMqServiceImpl extends ServiceImpl<TbMessageMapper, TbMessage>
      */
     @Override
     public void sendMessageByWork(String queueName,Object message) {
-        rabbitTemplate.convertAndSend(queueName,message);
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        if(message instanceof JSONObject)
+            correlationData.setReturnedMessage(new Message(JSONObject.toJSONString(message).getBytes(),null));
+        rabbitTemplate.convertAndSend(queueName,message,correlationData);
     }
 
     /**
@@ -40,7 +48,10 @@ public class RabbitMqServiceImpl extends ServiceImpl<TbMessageMapper, TbMessage>
      */
     @Override
     public void sendMessageByFanout(String exchange,Object message) {
-        rabbitTemplate.convertAndSend(exchange,"",message);
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        if(message instanceof JSONObject)
+            correlationData.setReturnedMessage(new Message(JSONObject.toJSONString(message).getBytes(),null));
+        rabbitTemplate.convertAndSend(exchange,"",message,correlationData);
     }
 
     /**
@@ -50,7 +61,10 @@ public class RabbitMqServiceImpl extends ServiceImpl<TbMessageMapper, TbMessage>
      */
     @Override
     public void sendMessageByDirect(String exchange,String routingKey,Object message) {
-        rabbitTemplate.convertAndSend(exchange,routingKey,message);
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        if(message instanceof JSONObject)
+            correlationData.setReturnedMessage(new Message(JSONObject.toJSONString(message).getBytes(),null));
+        rabbitTemplate.convertAndSend(exchange,routingKey,message,correlationData);
     }
 
     /**
@@ -60,7 +74,10 @@ public class RabbitMqServiceImpl extends ServiceImpl<TbMessageMapper, TbMessage>
      */
     @Override
     public void sendMessageByTopic(String exchange,String routingKey,Object message) {
-        rabbitTemplate.convertAndSend(exchange,routingKey,message);
+        CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
+        if(message instanceof JSONObject)
+            correlationData.setReturnedMessage(new Message(JSONObject.toJSONString(message).getBytes(),null));
+        rabbitTemplate.convertAndSend(exchange,routingKey,message,correlationData);
     }
 
 

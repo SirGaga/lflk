@@ -50,6 +50,13 @@ spring:
     password: guest
     virtual-host: /lflk
     monitorPort: 15672
+    #开启 confirm 确认机制
+    publisher-confirm-type: correlated
+    #开启 return 确认机制 路由失败回调
+    publisher-returns: true
+    template:
+      # 必须设置成true 消息路由失败通知监听者，而不是将消息丢弃
+      mandatory: true
     ## 消费端配置https://blog.csdn.net/en_joker/article/details/80103519
     listener:
       simple:

@@ -1,4 +1,4 @@
-package com.asideal.lflk.system.listener;
+package com.asideal.lflk.listener;
 
 import com.alibaba.fastjson.JSONObject;
 import com.asideal.lflk.system.entity.TbMessage;
