@@ -1,6 +1,7 @@
 package com.asideal.lflk.validate.controller;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.security.service.AuthenticationService;
@@ -43,13 +44,17 @@ public class ValidateController {
 
     @ApiOperation(value = "监测用户名是否重复" ,notes = "根据用户填写的用户名进行校验")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String")
+            @ApiImplicitParam(name = "userName", value = "用户名", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "id", value = "用户id", required = false, dataType = "Integer")
     })
     @GetMapping("/checkUserName")
-    public Result checkUserName(@RequestParam String userName){
+    public Result checkUserName(@RequestParam String userName, @RequestParam(required = false) Integer id){
 
         QueryWrapper<TbSysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_name", userName);
+        if (ObjectUtil.isNotNull(id)){
+            queryWrapper.ne("id", id);
+        }
         int count = tbSysUserService.count(queryWrapper);
         return count > 0 ?
                 Result.ok()
@@ -61,13 +66,17 @@ public class ValidateController {
 
     @ApiOperation(value = "监测身份证号是否重复" ,notes = "根据用户填写的公民身份号码进行校验")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "gmsfhm", value = "公民身份号码", required = true, dataType = "String")
+            @ApiImplicitParam(name = "gmsfhm", value = "公民身份号码", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "id", value = "用户id", required = false, dataType = "Integer")
     })
     @GetMapping("/checkGmsfhm")
-    public Result checkGmsfhm(@RequestParam String gmsfhm){
+    public Result checkGmsfhm(@RequestParam String gmsfhm, @RequestParam(required = false) Integer id){
 
         QueryWrapper<TbSysUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("gmsfhm", gmsfhm);
+        if (ObjectUtil.isNotNull(id)){
+            queryWrapper.ne("id", id);
+        }
         int count = tbSysUserService.count(queryWrapper);
         return count > 0 ?
                 Result.ok()
