@@ -4,23 +4,32 @@ import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+/**
+ * 动态数据源管理
+ * @author MengTianYou
+ */
 @Component
 @Log4j2
 public class DynamicDatasource {
-    //动态数据源
-    @Autowired
+    /**
+     * 动态数据源
+     */
+    @Resource
     protected DataSource dataSource;
-    //数据源创建器
+    /**
+     * 数据源创建器
+     */
     @Resource
     protected DataSourceCreator dataSourceCreator;
 
-    //创建数据源
+    /**
+     * 创建数据源
+     */
     public void createNewDataSource() {
         DynamicRoutingDataSource drds = (DynamicRoutingDataSource) dataSource;
         if(!drds.getCurrentGroupDataSources().containsKey("salve_sjz")){

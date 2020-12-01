@@ -82,16 +82,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         // 允许跨域并去掉 CSRF
         http.cors().configurationSource(corsConfigurationSource).and().csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 使用 JWT，关闭token
+                // 使用 JWT，关闭token
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-
                 .httpBasic().authenticationEntryPoint(authenticationEntryPoint)
-
                 .and()
-                .authorizeRequests()//定义哪些URL需要被保护、哪些不需要被保护
+                //定义哪些URL需要被保护、哪些不需要被保护
+                .authorizeRequests()
 
                 .anyRequest()
                 //任何请求,登录后可以访问
@@ -114,16 +113,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(jwtLogoutSuccessHandler)
                 .permitAll();
 
-
-
-
-        http.exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler); // 无权访问 JSON 格式的数据
-        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class); // JWT Filter
+        // 无权访问 JSON 格式的数据
+        http.exceptionHandling().accessDeniedHandler(jwtAccessDeniedHandler);
+        // JWT Filter
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/swagger/**")
                 .antMatchers("/swagger-ui.html")
                 .antMatchers("/webjars/**")
@@ -138,12 +136,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        CorsConfigurationSource source =   new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source =   new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("*");    //同源配置，*表示任何请求都视为同源，若需指定ip和端口可以改为如“localhost：8080”，多个以“，”分隔；
-        corsConfiguration.addAllowedHeader("*"); // header，允许哪些header，本案中使用的是token，此处可将*替换为token；
-        corsConfiguration.addAllowedMethod("*");    //允许的请求方法，POST、GET等
-        ((UrlBasedCorsConfigurationSource) source).registerCorsConfiguration("/**",corsConfiguration); //配置允许跨域访问的url
+        // 同源配置，*表示任何请求都视为同源，若需指定ip和端口可以改为如“localhost：8080”，多个以“，”分隔；
+        corsConfiguration.addAllowedOrigin("*");
+        // header，允许哪些header，本案中使用的是token，此处可将*替换为token；
+        corsConfiguration.addAllowedHeader("*");
+        // 允许的请求方法，POST、GET等
+        corsConfiguration.addAllowedMethod("*");
+        // 配置允许跨域访问的url
+        source.registerCorsConfiguration("/**",corsConfiguration);
         return source;
     }
 
