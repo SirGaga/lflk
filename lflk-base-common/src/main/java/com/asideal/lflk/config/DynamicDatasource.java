@@ -34,24 +34,41 @@ public class DynamicDatasource {
         }
 
     }
-    //创建数据源(石家庄)
+    /**
+     * 创建数据源(石家庄)
+     * @return 返回连接属性
+     */
     private DataSourceProperty createDataSource_sjz() {
         DataSourceProperty dsp = new DataSourceProperty();
-        dsp.setPoolName("salve1");//链接池名称
-        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_sjz?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");//数据库连接
-        dsp.setUsername("root");//用户名
-        dsp.setPassword("123456");//密码
-        dsp.setDriverClassName("com.mysql.cj.jdbc.Driver");//驱动
+        // 链接池名称
+        dsp.setPoolName("salve1");
+        // 数据库连接
+        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_sjz?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");
+        // 用户名
+        dsp.setUsername("root");
+        // 密码
+        dsp.setPassword("123456");
+        // 驱动
+        dsp.setDriverClassName("com.mysql.cj.jdbc.Driver");
         return dsp;
     }
-    //创建数据源(保定)
+
+    /**
+     * 创建数据源(保定)
+     * @return 返回连接属性
+     */
     private DataSourceProperty createDataSource_bd() {
         DataSourceProperty dsp = new DataSourceProperty();
-        dsp.setPoolName("salve2");//链接池名称
-        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_bd?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");//数据库连接
-        dsp.setUsername("root");//用户名
-        dsp.setPassword("123456");//密码
-        dsp.setDriverClassName("com.mysql.cj.jdbc.Driver");//驱动
+        // 链接池名称
+        dsp.setPoolName("salve2");
+        //数据库连接
+        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_bd?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");
+        // 用户名
+        dsp.setUsername("root");
+        // 密码
+        dsp.setPassword("123456");
+        // 驱动
+        dsp.setDriverClassName("com.mysql.cj.jdbc.Driver");
         return dsp;
     }
 }
