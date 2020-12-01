@@ -2,6 +2,7 @@ package com.asideal.lflk.system.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.asideal.lflk.response.Result;
+import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.service.RabbitMqService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,25 +16,25 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.io.IOException;
 
+
 @Api(value = "MQ监控及相关操作模块", tags = "MQ监控及操作接口")
 @RestController
 @RequestMapping("/system/rabbit")
-@CrossOrigin//是用来处理跨域请求的注解
+@CrossOrigin
 @Log4j2
+/**
+ * RabbitMq控制器
+ *
+ * @author MengTianYou
+ * @since 2020-12-01
+ */
 public class RabbitMqController {
     @Resource
     private Environment env;
@@ -45,21 +46,24 @@ public class RabbitMqController {
     private String password;
     @Value("${spring.rabbitmq.monitorPort}")
     private String port;
-    //交换机名称
+    /**
+     * 交换机名称
+     */
     @Value("${app.rabbitmq.exchange.ali2me-normal-exchange}")
     private String ali2me_normal_exchange;
-    //topic路由key
+    /**
+     * topic路由key
+     */
     @Value("${app.rabbitmq.key.ali2me-normal-routing-key}")
     private String ali2me_normal_routing_key;
 
-    @Autowired
+    @Resource
     private RabbitMqService rabbitMqService;
     @GetMapping("/overview")
     @ApiOperation(value = "查询总体RabbitMQ运行状态")
     public JSONObject overview() {
         log.info("host="+env.getProperty("spring.rabbitmq.host"));
         JSONObject jsonObj = getData("http://"+host+":"+port+"/api/overview", username, password);
-        //jsonObj.getString("");
         return jsonObj;
     }
 
@@ -116,7 +120,7 @@ public class RabbitMqController {
         CloseableHttpResponse response =null;
         try {
             response = httpClient.execute(httpGet);
-            if (response.getStatusLine().getStatusCode() != 200) {
+            if (response.getStatusLine().getStatusCode() != ResultCode.SUCCESS.getCode()) {
                 System.out.println("call http api to get rabbitmq data return code: " + response.getStatusLine().getStatusCode() + ", url: " + url);
             }
             HttpEntity entity = response.getEntity();
@@ -127,8 +131,9 @@ public class RabbitMqController {
 
         } finally {
             try {
-                if(response!=null)
+                if(response!=null){
                     response.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

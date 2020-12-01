@@ -76,13 +76,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 //任何请求,登录后可以访问
                 //.permitAll()
-                .access("@rbacPermission.hasPermission(request,authentication)") // RBAC 动态 url 认证
+                // RBAC 动态 url 认证
+                .access("@rbacPermission.hasPermission(request,authentication)")
                 .and()
                 .formLogin()  //开启登录, 定义当需要用户登录时候，转到的登录页面，
                 //.loginPage("/test/login.html") // 前后端分离的项目不需要开启此项
                 .loginProcessingUrl("/login")
-                .successHandler(jwtAuthenticationSuccessHandler) // 登录成功
-                .failureHandler(jwtAuthenticationFailureHandler) // 登录失败
+                // 登录成功
+                .successHandler(jwtAuthenticationSuccessHandler)
+                // 登录失败
+                .failureHandler(jwtAuthenticationFailureHandler)
                 .permitAll()
 
                 .and()
@@ -99,6 +102,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     }
 
+    @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers("/swagger/**")
                 .antMatchers("/swagger-ui.html")

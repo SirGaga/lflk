@@ -83,9 +83,14 @@ public class TbSysUserController {
     public Result updateUserById(@PathVariable Integer id, @RequestBody TbSysUser tbSysUser) {
         log.info("更新用户===>用户id："+id);
         tbSysUser.setPassword(Password.QuickPassword(tbSysUser.getPwd()));
+        Authentication authentication = authenticationService.getAuthentication();
+        TbSysUser operateUser = tbSysUserService.getOne(new LambdaUpdateWrapper<TbSysUser>().eq(TbSysUser::getUserName, authentication.getName()));
+        tbSysUser.setUpdateTime(DateUtil.date(Calendar.getInstance()));
+        tbSysUser.setUpdateUserId(operateUser.getId());
+        tbSysUser.setUpdateUserName(operateUser.getUserName());
         boolean b = tbSysUserService.updateById(tbSysUser);
         if (b) {
-            return Result.ok().data("result", true);
+            return Result.ok().success(true);
         } else {
             throw new BusinessException(ResultCode.USER_ACCOUNT_UPDATE_FAILURE.getCode(),ResultCode.USER_ACCOUNT_UPDATE_FAILURE.getMessage());
         }
@@ -120,7 +125,7 @@ public class TbSysUserController {
     public Result deleteUserById(@PathVariable Integer id){
         boolean b = tbSysUserService.removeById(id);
         if (b) {
-            return Result.ok().data("result", true);
+            return Result.ok().success(true);
         } else {
             throw new BusinessException(ResultCode.USER_ACCOUNT_DELETE_FAILURE.getCode(),ResultCode.USER_ACCOUNT_DELETE_FAILURE.getMessage());
         }

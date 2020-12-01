@@ -38,11 +38,17 @@ public class JwtTokenUtils implements InitializingBean {
         key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    // 过期时间是3600秒，既是1个小时
+    /**
+     * 过期时间是3600秒，既是1个小时
+     */
     private static final long EXPIRATION = 604800L;
 
-
-    // 创建token
+    /**
+     * 创建token
+     * @param username 用户名
+     * @param claims token中载荷的信息
+     * @return 返回jwt形式的token字符串
+     */
     public static String createToken(String username, Map<String,Object> claims) {
         return Jwts.builder()
                 .setClaims(claims)
