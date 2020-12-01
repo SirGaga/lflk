@@ -8,16 +8,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -33,19 +23,17 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.io.IOException;
 
-
-
-@Api(value = "MQ监控及相关操作模块", tags = "MQ监控及操作接口")
-@RestController
-@RequestMapping("/system/rabbit")
-@CrossOrigin
-@Log4j2
 /**
  * RabbitMq控制器
  *
  * @author MengTianYou
  * @since 2020-12-01
  */
+@Api(value = "MQ监控及相关操作模块", tags = "MQ监控及操作接口")
+@RestController
+@RequestMapping("/system/rabbit")
+@CrossOrigin
+@Log4j2
 public class RabbitMqController {
 
     @Resource
