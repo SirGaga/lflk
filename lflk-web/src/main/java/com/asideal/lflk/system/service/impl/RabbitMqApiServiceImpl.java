@@ -145,8 +145,9 @@ public class RabbitMqApiServiceImpl implements RabbitMqApiService {
             throw e;
         } finally {
             try {
-                if(response!=null)
+                if(response!=null) {
                     response.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

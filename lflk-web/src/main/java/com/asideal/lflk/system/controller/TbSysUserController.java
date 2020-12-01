@@ -59,7 +59,7 @@ public class TbSysUserController {
         Page<TbSysUser> page = new Page<>(userVo.getCurrent(),userVo.getSize());
         IPage<TbSysUser> userPage = tbSysUserService.page(page, getQueryWrapper(userVo));
 
-        return Result.ok().data("total",userPage.getTotal()).data("records",userPage.getRecords());
+        return Result.ok().success(true).data("total",userPage.getTotal()).data("records",userPage.getRecords());
     }
 
     @ApiOperation(value = "查询单个用户", notes = "通过用户id查询对应的用户信息")
@@ -70,7 +70,7 @@ public class TbSysUserController {
     public Result findUserById(@PathVariable Integer id){
         TbSysUser tbSysUser = tbSysUserService.getById(id);
         if (ObjectUtil.isNotNull(tbSysUser)){
-            return Result.ok().data("user",tbSysUser);
+            return Result.ok().success(true).data("user",tbSysUser);
         } else {
             throw new BusinessException(ResultCode.USER_ACCOUNT_NOT_EXIST.getCode(),ResultCode.USER_ACCOUNT_NOT_EXIST.getMessage());
         }

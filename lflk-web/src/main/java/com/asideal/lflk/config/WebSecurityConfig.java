@@ -29,26 +29,47 @@ import javax.annotation.Resource;
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * 未登陆时返回 JSON 格式的数据给前端（否则为 html）
+     */
     @Resource
-    JwtAuthenticationEntryPoint authenticationEntryPoint;//未登陆时返回 JSON 格式的数据给前端（否则为 html）
+    JwtAuthenticationEntryPoint authenticationEntryPoint;
 
+    /**
+     * 登录成功返回的 JSON 格式数据给前端（否则为 html）
+     */
     @Resource
-    JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler; //登录成功返回的 JSON 格式数据给前端（否则为 html）
+    JwtAuthenticationSuccessHandler jwtAuthenticationSuccessHandler;
 
+    /**
+     * 登录失败返回的 JSON 格式数据给前端（否则为 html）
+     */
     @Resource
-    JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler; //登录失败返回的 JSON 格式数据给前端（否则为 html）
+    JwtAuthenticationFailureHandler jwtAuthenticationFailureHandler;
 
+    /**
+     * 注销成功返回的 JSON 格式数据给前端（否则为 登录时的 html）
+     */
     @Resource
-    JwtLogoutSuccessHandler jwtLogoutSuccessHandler;//注销成功返回的 JSON 格式数据给前端（否则为 登录时的 html）
+    JwtLogoutSuccessHandler jwtLogoutSuccessHandler;
 
+    /**
+     * 无权访问返回的 JSON 格式数据给前端（否则为 403 html 页面）
+     */
     @Resource
-    JwtAccessDeniedHandler jwtAccessDeniedHandler;//无权访问返回的 JSON 格式数据给前端（否则为 403 html 页面）
+    JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
+    /**
+     * 自定义user
+     */
     @Resource
-    TbSysUserService tbSysUserService; // 自定义user
+    TbSysUserService tbSysUserService;
 
+    /**
+     * JWT 拦截器
+     */
     @Resource
-    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter; // JWT 拦截器
+    JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
     @Resource
     CorsConfigurationSource corsConfigurationSource;
@@ -56,7 +77,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         // 加入自定义的安全认证
-//        auth.authenticationProvider(provider);
         auth.userDetailsService(tbSysUserService).passwordEncoder(new BCryptPasswordEncoder());
     }
 

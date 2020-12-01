@@ -7,6 +7,10 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 菜单实体转成菜单组件Vo
+ * @author family
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 @ApiModel(value="菜单组件对象", description="将菜单信息转成菜单组件信息")
@@ -16,7 +20,7 @@ public class MenuComponentVo {
     private Integer id;
 
     @ApiModelProperty(value = "前端keep-alive属性设置")
-    private String Name;
+    private String name;
 
     @ApiModelProperty(value = "菜单名称 菜单名称")
     private String menuName;

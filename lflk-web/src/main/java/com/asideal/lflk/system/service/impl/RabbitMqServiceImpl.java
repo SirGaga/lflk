@@ -36,8 +36,9 @@ public class RabbitMqServiceImpl extends ServiceImpl<TbMessageMapper, TbMessage>
     @Override
     public void sendMessageByWork(String queueName,Object message) {
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
-        if(message instanceof JSONObject)
+        if(message instanceof JSONObject) {
             correlationData.setReturnedMessage(new Message(JSONObject.toJSONString(message).getBytes(),null));
+        }
         rabbitTemplate.convertAndSend(queueName,message,correlationData);
     }
 
@@ -49,8 +50,9 @@ public class RabbitMqServiceImpl extends ServiceImpl<TbMessageMapper, TbMessage>
     @Override
     public void sendMessageByFanout(String exchange,Object message) {
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
-        if(message instanceof JSONObject)
+        if(message instanceof JSONObject) {
             correlationData.setReturnedMessage(new Message(JSONObject.toJSONString(message).getBytes(),null));
+        }
         rabbitTemplate.convertAndSend(exchange,"",message,correlationData);
     }
 
@@ -62,8 +64,9 @@ public class RabbitMqServiceImpl extends ServiceImpl<TbMessageMapper, TbMessage>
     @Override
     public void sendMessageByDirect(String exchange,String routingKey,Object message) {
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
-        if(message instanceof JSONObject)
+        if(message instanceof JSONObject) {
             correlationData.setReturnedMessage(new Message(JSONObject.toJSONString(message).getBytes(),null));
+        }
         rabbitTemplate.convertAndSend(exchange,routingKey,message,correlationData);
     }
 
@@ -75,8 +78,9 @@ public class RabbitMqServiceImpl extends ServiceImpl<TbMessageMapper, TbMessage>
     @Override
     public void sendMessageByTopic(String exchange,String routingKey,Object message) {
         CorrelationData correlationData = new CorrelationData(UUID.randomUUID().toString());
-        if(message instanceof JSONObject)
+        if(message instanceof JSONObject) {
             correlationData.setReturnedMessage(new Message(JSONObject.toJSONString(message).getBytes(),null));
+        }
         rabbitTemplate.convertAndSend(exchange,routingKey,message,correlationData);
     }
 
