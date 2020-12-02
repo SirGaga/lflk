@@ -21,6 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import javax.annotation.Resource;
 
 /**
+ * spring security 的 web 配置
  * @author ZhangJie
  * @since 2020-11-14
  */
@@ -98,8 +99,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // RBAC 动态 url 认证
                 .access("@rbacPermission.hasPermission(request,authentication)")
                 .and()
-                .formLogin()  //开启登录, 定义当需要用户登录时候，转到的登录页面，
-                //.loginPage("/test/login.html") // 前后端分离的项目不需要开启此项
+                //开启登录, 定义当需要用户登录时候，转到的登录页面，
+                .formLogin()
+                // 前后端分离的项目不需要开启此项
+                //.loginPage("/test/login.html")
                 .loginProcessingUrl("/login")
                 // 登录成功
                 .successHandler(jwtAuthenticationSuccessHandler)

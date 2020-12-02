@@ -108,12 +108,12 @@ public class LoginController {
             });
             List<ComponentVo> componentList = JSON.parseArray(JSON.toJSONString(pidListMap.get(0)), ComponentVo.class);
             //取出顶层节点的对象，数据库中的顶层节点的"ParentId"为0,注意是ParentId
-            return Result.ok().data("result",true).data("records",JSON.toJSON(componentList));
+            return Result.ok().success(true).data("records",JSON.toJSON(componentList));
         } else {
             return Result.error()
                     .code(ResultCode.MENU_COMPONENT_NOT_ASSIGNED.getCode())
                     .message(ResultCode.MENU_COMPONENT_NOT_ASSIGNED.getMessage())
-                    .data("result",false);
+                    .success(false);
         }
     }
 

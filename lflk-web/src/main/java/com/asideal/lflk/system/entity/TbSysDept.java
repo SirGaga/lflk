@@ -1,6 +1,7 @@
 package com.asideal.lflk.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -65,5 +67,8 @@ public class TbSysDept implements Serializable {
     @ApiModelProperty(value = "是否删除，0代表未删除（默认值），1代表已删除")
     private Integer deleted;
 
+    @ApiModelProperty(value = "子节点，线性结构转树形结构使用，非数据库字段")
+    @TableField(exist = false)
+    private List<TbSysDept> children;
 
 }

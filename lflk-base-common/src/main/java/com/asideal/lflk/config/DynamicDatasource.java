@@ -52,7 +52,7 @@ public class DynamicDatasource {
         // 链接池名称
         dsp.setPoolName("salve1");
         // 数据库连接
-        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_sjz?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");
+        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_sjz?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true");
         // 用户名
         dsp.setUsername("root");
         // 密码
@@ -71,7 +71,7 @@ public class DynamicDatasource {
         // 链接池名称
         dsp.setPoolName("salve2");
         //数据库连接
-        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_bd?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");
+        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_bd?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true");
         // 用户名
         dsp.setUsername("root");
         // 密码

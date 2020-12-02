@@ -2,6 +2,7 @@ package com.asideal.lflk.system.controller;
 
 
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
@@ -16,6 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -43,8 +46,25 @@ public class TbSysDeptController {
     public Result getDeptTree(){
         List<TbSysDept> list = tbSysDeptService.list();
 
-        return Result.ok().data("records",list);
+        return Result.ok().success(true).data("records",list);
     }
+
+    /**
+     * 查询所有的部门，后期改造成根据pid排序的
+     * @return List<TbSysUser> 返回用户列表
+     */
+    @ApiOperation(value = "部门信息多个根节点树",notes = "查询部门信息返回多节点树")
+    @GetMapping("/multiTree")
+    public Result getDeptTreeMultiNode(){
+        List<TbSysDept> list = tbSysDeptService.list();
+
+        Map<Integer,List<TbSysDept>> pidListMap =
+                list.stream().collect(Collectors.groupingBy(TbSysDept::getParentId));
+        list.stream().forEach(item->item.setChildren(pidListMap.get(item.getId())));
+
+        return Result.ok().success(true).data("records", JSON.toJSON(pidListMap.get(0)));
+    }
+
     @ApiOperation(value = "查询单个用户", notes = "通过用户id查询对应的用户信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
