@@ -1,12 +1,15 @@
 package com.asideal.lflk.system.controller;
 
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
+import com.asideal.lflk.base.controller.BaseController;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysDept;
+import com.asideal.lflk.system.entity.TbSysUser;
 import com.asideal.lflk.system.service.TbSysDeptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -16,6 +19,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,7 +37,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/system/dept")
 @CrossOrigin
 @Log4j2
-public class TbSysDeptController {
+public class TbSysDeptController extends BaseController {
 
     @Resource
     private TbSysDeptService tbSysDeptService;
@@ -65,7 +69,7 @@ public class TbSysDeptController {
         return Result.ok().success(true).data("records", JSON.toJSON(pidListMap.get(0)));
     }
 
-    @ApiOperation(value = "查询单个用户", notes = "通过用户id查询对应的用户信息")
+    @ApiOperation(value = "查询单个部门", notes = "通过部门id查询对应的部门信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
     })
@@ -73,7 +77,7 @@ public class TbSysDeptController {
     public Result findDeptById(@PathVariable Integer id){
         TbSysDept tbSysDept = tbSysDeptService.getById(id);
         if (ObjectUtil.isNotNull(tbSysDept)){
-            return Result.ok().data("result",true).data("records",tbSysDept);
+            return Result.ok().success(true).data("records",tbSysDept);
         } else {
             throw new BusinessException(ResultCode.DEPARTMENT_NOT_EXIST.getCode(),ResultCode.DEPARTMENT_NOT_EXIST.getMessage());
         }
@@ -82,12 +86,16 @@ public class TbSysDeptController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "部门id", required = true, dataType = "Integer")
     })
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public Result updateDeptById(@PathVariable Integer id, @RequestBody TbSysDept tbSysDept) {
         log.info("更新部门===>部门id："+id);
+        TbSysUser operateUser = this.getUserByAuthentication(this.getAuthentication());
+        tbSysDept.setUpdateUserId(operateUser.getId());
+        tbSysDept.setUpdateUserName(operateUser.getUserName());
+        tbSysDept.setUpdateTime(DateUtil.date(Calendar.getInstance()));
         boolean b = tbSysDeptService.updateById(tbSysDept);
         if (b) {
-            return Result.ok().data("result", true);
+            return Result.ok().success(true).data("records",tbSysDept);
         } else {
             throw new BusinessException(ResultCode.DEPARTMENT_UPDATE_FAILURE.getCode(),ResultCode.DEPARTMENT_UPDATE_FAILURE.getMessage());
         }
@@ -95,10 +103,17 @@ public class TbSysDeptController {
 
     @ApiOperation(value = "添加部门" ,notes = "根据部门实体添加部门")
     @PostMapping("/add")
-    public Result saveUser(@RequestBody TbSysDept tbSysDept){
+    public Result saveDept(@RequestBody TbSysDept tbSysDept){
+        TbSysUser operateUser = this.getUserByAuthentication(this.getAuthentication());
+        tbSysDept.setCreateUserId(operateUser.getId());
+        tbSysDept.setCreateUserName(operateUser.getUserName());
+        tbSysDept.setCreateTime(DateUtil.date(Calendar.getInstance()));
+        tbSysDept.setUpdateUserId(operateUser.getId());
+        tbSysDept.setUpdateUserName(operateUser.getUserName());
+        tbSysDept.setUpdateTime(DateUtil.date(Calendar.getInstance()));
         boolean b = tbSysDeptService.save(tbSysDept);
         if (b) {
-            return Result.ok().data("result", true);
+            return Result.ok().success(true).data("records",tbSysDept);
         } else {
             throw new BusinessException(ResultCode.DEPARTMENT_ADD_FAILURE.getCode(),ResultCode.DEPARTMENT_ADD_FAILURE.getMessage());
         }
@@ -108,11 +123,11 @@ public class TbSysDeptController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "Integer")
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public Result deleteDeptById(@PathVariable Integer id){
         boolean b = tbSysDeptService.removeById(id);
         if (b) {
-            return Result.ok().data("result", true);
+            return Result.ok().success(true);
         } else {
             throw new BusinessException(ResultCode.DEPARTMENT_DELETE_FAILURE.getCode(),ResultCode.DEPARTMENT_DELETE_FAILURE.getMessage());
         }
