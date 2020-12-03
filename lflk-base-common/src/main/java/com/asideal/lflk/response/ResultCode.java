@@ -74,6 +74,10 @@ public enum ResultCode implements CustomResultCode{
     NO_PERMISSION(7001, "没有权限"),
 
     /*运行时异常*/
+    CLIENT_PROTOCOL_EXCEPTION(8001,"客户端协议异常"),
+    IO_EXCEPTION(8002,"IO异常"),
+
+    /*运行时异常*/
     ARITHMETIC_EXCEPTION(9001,"算数异常");
 
     private Integer code;

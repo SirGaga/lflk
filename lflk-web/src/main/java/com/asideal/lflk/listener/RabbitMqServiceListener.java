@@ -68,7 +68,8 @@ public class RabbitMqServiceListener {
                 //通过yjid判断是哪个地市的预警数据
                 String dsname=msgObj.containsKey("datasource")?msgObj.getString("datasource"):"master";
                 log.info("数据源{}",dsname);
-                DynamicDataSourceContextHolder.push(dsname);//数据源名称
+                //数据源名称
+                DynamicDataSourceContextHolder.push(dsname);
                 // your code 需注意使用后一定要使用poll清空数据源，
                 TbMessage tbMessage = new TbMessage();
                 tbMessage.setYjid(msgObj.getString("yjid")).setMessageBody(msgObj.toJSONString()).setRksj(new Date());

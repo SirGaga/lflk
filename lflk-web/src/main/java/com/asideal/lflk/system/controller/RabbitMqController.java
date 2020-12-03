@@ -1,6 +1,7 @@
 package com.asideal.lflk.system.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.service.RabbitMqService;
@@ -10,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.auth.BasicScheme;
@@ -119,9 +121,7 @@ public class RabbitMqController {
         HttpGet httpGet = new HttpGet(url);
         httpGet.addHeader(BasicScheme.authenticate(creds, "UTF-8", false));
         httpGet.setHeader("Content-Type", "application/json");
-        CloseableHttpResponse response =null;
-        try {
-            response = httpClient.execute(httpGet);
+        try(CloseableHttpResponse response = httpClient.execute(httpGet);){
             if (response.getStatusLine().getStatusCode() != ResultCode.SUCCESS.getCode()) {
                 System.out.println("call http api to get rabbitmq data return code: " + response.getStatusLine().getStatusCode() + ", url: " + url);
             }
@@ -129,16 +129,10 @@ public class RabbitMqController {
             if (entity != null) {
                 return JSONObject.parseObject(EntityUtils.toString(entity));
             }
-        } catch (Exception e) {
-
-        } finally {
-            try {
-                if(response!=null){
-                    response.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        } catch (ClientProtocolException e) {
+            throw new BusinessException(ResultCode.CLIENT_PROTOCOL_EXCEPTION.getCode(),ResultCode.CLIENT_PROTOCOL_EXCEPTION.getMessage());
+        } catch (IOException e) {
+            throw new BusinessException(ResultCode.IO_EXCEPTION.getCode(),ResultCode.IO_EXCEPTION.getMessage());
         }
         return jsonObj;
     }
