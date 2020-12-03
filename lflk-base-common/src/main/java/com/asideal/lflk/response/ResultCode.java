@@ -69,6 +69,9 @@ public enum ResultCode implements CustomResultCode{
     ROLE_MENU_ADD_FAILURE(6001, "用户角色添加失败"),
     ROLE_MENU_DELETE_FAILURE(6002, "用户角色删除失败"),
 
+    /*RabbitMQ错误*/
+    RABBITMQ_API_READ_FAILURE(9001, "RabbitMQ_API调用接口异常"),
+    RABBITMQ_API_AUTH_FAILURE(9002, "RabbitMQ_API接口未有查询权限"),
 
     /* 业务错误 */
     NO_PERMISSION(7001, "没有权限"),

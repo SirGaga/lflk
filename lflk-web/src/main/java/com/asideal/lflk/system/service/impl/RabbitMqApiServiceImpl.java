@@ -2,6 +2,8 @@ package com.asideal.lflk.system.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.asideal.lflk.handler.BusinessException;
+import com.asideal.lflk.response.Result;
 import com.asideal.lflk.system.vo.RabbitMqAPIChannel;
 import com.asideal.lflk.system.vo.RabbitMqAPIConnection;
 import com.asideal.lflk.system.vo.RabbitMqAPIExchange;
@@ -10,7 +12,9 @@ import com.asideal.lflk.system.vo.RabbitMqAPIQueue;
 import com.asideal.lflk.system.service.RabbitMqApiService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.http.HttpEntity;
+import org.apache.http.auth.AuthenticationException;
 import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.auth.BasicScheme;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +46,7 @@ public class RabbitMqApiServiceImpl implements RabbitMqApiService {
     private String port;
 
     @Override
-    public RabbitMqAPIInfo overview() {
+    public RabbitMqAPIInfo overview() throws IOException, AuthenticationException {
         RabbitMqAPIInfo info = RabbitMqAPIInfo.builder().build();
         try {
             JSONObject jsonObj = JSONObject.parseObject(getData("http://"+host+":"+port+"/api/overview", username, password));
@@ -62,27 +67,29 @@ public class RabbitMqApiServiceImpl implements RabbitMqApiService {
             info.setChannels(channels());
             info.setExchanges(exchanges());
             info.setQueues(queues());
-        } catch (IOException e) {
+        } catch (IOException | AuthenticationException e) {
             log.error("{}",e);
+            throw e;
         }
         return info;
     }
     @Override
-    public List<RabbitMqAPIConnection> connections() {
+    public List<RabbitMqAPIConnection> connections()  throws IOException, AuthenticationException{
         log.info("host="+env.getProperty("spring.rabbitmq.host"));
         //JSONObject jsonObj = getData("http://"+host+":"+port+"/api/connections", username, password);
         String url="http://"+host+":"+port+"/api/connections";
         List<RabbitMqAPIConnection> list = new ArrayList<>();
         try {
             list = JSONArray.parseArray(getData(url, username, password), RabbitMqAPIConnection.class);
-        } catch (IOException e) {
+        } catch (IOException | AuthenticationException e) {
             log.error("{}",e);
+            throw e;
         }
         return list;
     }
 
     @Override
-    public List<RabbitMqAPIChannel> channels() {
+    public List<RabbitMqAPIChannel> channels() throws IOException, AuthenticationException {
         String url="http://"+host+":"+port+"/api/channels";
         List<RabbitMqAPIChannel> list = new ArrayList<>();
         try {
@@ -96,61 +103,61 @@ public class RabbitMqApiServiceImpl implements RabbitMqApiService {
                 channel.setState(jsonObj.getString("state"));
                 list.add(channel);
             });
-        } catch (IOException e) {
+        } catch (IOException | AuthenticationException e) {
             log.error("{}",e);
+            throw e;
         }
         return list;
     }
 
     @Override
-    public List<RabbitMqAPIExchange> exchanges() {
+    public List<RabbitMqAPIExchange> exchanges()  throws IOException, AuthenticationException{
         String url="http://"+host+":"+port+"/api/exchanges";
         List<RabbitMqAPIExchange> list = new ArrayList<>();
         try {
             list = JSONArray.parseArray(getData(url, username, password), RabbitMqAPIExchange.class);
-        } catch (IOException e) {
+        } catch (IOException | AuthenticationException e) {
             log.error("{}",e);
+            throw e;
         }
         return list;
     }
 
     @Override
-    public List<RabbitMqAPIQueue> queues() {
+    public List<RabbitMqAPIQueue> queues()  throws IOException, AuthenticationException{
         String url="http://"+host+":"+port+"/api/queues";
         List<RabbitMqAPIQueue> list = new ArrayList<>();
         try {
             list = JSONArray.parseArray(getData(url, username, password), RabbitMqAPIQueue.class);
-        } catch (IOException e) {
+        } catch (IOException | AuthenticationException e) {
             log.error("{}",e);
+            throw e;
         }
         return list;
     }
-    private String getData(String url, String username, String password) throws IOException {
-        CloseableHttpClient httpClient = HttpClients.createDefault();
-        UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
-        HttpGet httpGet = new HttpGet(url);
-        httpGet.addHeader(BasicScheme.authenticate(creds, "UTF-8", false));
-        httpGet.setHeader("Content-Type", "application/json");
-        CloseableHttpResponse response =null;
-        try {
-            response = httpClient.execute(httpGet);
-            if (response.getStatusLine().getStatusCode() != 200) {
-                System.out.println("call http api to get rabbitmq data return code: " + response.getStatusLine().getStatusCode() + ", url: " + url);
-            }
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                return EntityUtils.toString(entity);
-            }
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            try {
-                if(response!=null) {
-                    response.close();
+
+    private String getData(String url, String username, String password) throws IOException, AuthenticationException {
+        try (
+                CloseableHttpClient httpClient = HttpClients.createDefault();
+        ) {
+            UsernamePasswordCredentials creds = new UsernamePasswordCredentials(username, password);
+            HttpGet httpGet = new HttpGet(url);
+            //httpGet.addHeader(BasicScheme.authenticate(creds, "UTF-8", false));
+            httpGet.addHeader(new BasicScheme(StandardCharsets.UTF_8).authenticate(creds, httpGet, null));
+            httpGet.setHeader("Content-Type", "application/json");
+            try (
+                    CloseableHttpResponse response = httpClient.execute(httpGet);
+            ) {
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    log.error("call http api to get RabbitMQ data return code: " + response.getStatusLine().getStatusCode() + ", url: " + url);
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+                HttpEntity entity = response.getEntity();
+                if (entity != null) {
+                    return EntityUtils.toString(entity);
+                }
             }
+        } catch (IOException | AuthenticationException e) {
+            throw e;
         }
         return "";
     }
