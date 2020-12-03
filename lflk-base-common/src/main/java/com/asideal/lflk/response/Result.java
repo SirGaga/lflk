@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.util.HashMap;
 import java.util.Map;
-
+import com.asideal.lflk.response.ResultCode;
 /**
  * 公共返回结果
  * @author ZhangJie
@@ -80,5 +80,8 @@ public class Result {
     public Result data(Map<String,Object> map){
         this.setData(map);
         return this;
+    }
+
+    public static void main(String[] args) {
     }
 }
