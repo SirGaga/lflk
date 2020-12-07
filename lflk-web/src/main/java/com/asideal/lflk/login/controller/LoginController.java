@@ -3,18 +3,20 @@ package com.asideal.lflk.login.controller;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.security.service.AuthenticationService;
 import com.asideal.lflk.system.entity.TbSysMenu;
+import com.asideal.lflk.system.entity.TbSysMenuMeta;
 import com.asideal.lflk.system.entity.TbSysUser;
+import com.asideal.lflk.system.service.TbSysMenuMetaService;
 import com.asideal.lflk.system.service.TbSysMenuService;
 import com.asideal.lflk.system.service.TbSysUserService;
 import com.asideal.lflk.system.vo.ComponentVo;
-import com.asideal.lflk.system.vo.MenuComponentVo;
-import com.asideal.lflk.system.vo.MetaVo;
 import com.asideal.lflk.utils.IpUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,6 +52,9 @@ public class LoginController {
     @Resource
     private TbSysUserService tbSysUserService;
 
+    @Resource
+    private TbSysMenuMetaService tbSysMenuMetaService;
+
     @ApiOperation(value = "用户信息", notes = "根据用户登录的token获取用户信息")
     @GetMapping("/userInfo")
     private Result getUserInfo(HttpServletRequest request){
@@ -76,38 +81,28 @@ public class LoginController {
     public Result getComponent(@RequestBody List<String> roleNames){
         List<TbSysMenu> components = tbSysMenuService.getComponentByRoleNames(roleNames);
         if(CollUtil.isNotEmpty(components)){
-            List<MenuComponentVo> voList = JSON.parseArray(JSON.toJSONString(components), MenuComponentVo.class);
-            //以pid为Key进行分组存入Map
-            Map<Integer,List<MenuComponentVo>> pidListMap =
-                    voList.stream().collect(Collectors.groupingBy(MenuComponentVo::getParentId));
-            voList.stream().forEach(item->item.setChildren(pidListMap.get(item.getId())));
-            // 遍历循环将menu中的数据组装成组件信息
-            pidListMap.get(0).forEach(e -> {
-                MetaVo metaVo = new MetaVo();
-                String suffix = e.getChildren().stream().filter(p -> p.getOrderNum() == 1).map(MenuComponentVo::getPath).collect(Collectors.toList()).get(0);
+            // 获取menu
+            Map<Integer,List<TbSysMenu>> parentIdListMap = components.stream().collect(Collectors.groupingBy(TbSysMenu::getParentId));
+
+            components.stream().forEach(item -> item.setChildren(parentIdListMap.get(item.getId())));
+
+            parentIdListMap.get(0).forEach(e -> {
+                String suffix = e.getChildren().stream().filter(p -> p.getOrderNum() == 1).map(TbSysMenu::getPath).collect(Collectors.toList()).get(0);
                 e.setRedirect((e.getPath()+suffix).replace("//","/"));
+                TbSysMenuMeta meta = tbSysMenuMetaService.getOne(new LambdaQueryWrapper<TbSysMenuMeta>().eq(TbSysMenuMeta::getMenuId, e.getId()));
                 if(e.getPath().length()>1) {
-                    String extraName = e.getPath().substring(1).substring(0, 1).toUpperCase() + e.getPath().substring(1).substring(1);
-                    e.setName(extraName);
-                    metaVo.setTitle(e.getMenuName());
-                    metaVo.setIcon(e.getIcon());
-                    metaVo.setAffix(e.getAffix() == 1);
-                    e.setMeta(metaVo);
+
+                    e.setMeta(meta);
                 }
-                e.getChildren().forEach(c -> {
-                    MetaVo metaVoChild = new MetaVo();
-                    metaVoChild.setTitle(c.getMenuName());
-                    metaVoChild.setIcon(c.getIcon());
-                    metaVoChild.setAffix(c.getAffix() == 1);
-                    c.setMeta(metaVoChild);
-                    String cPath = c.getPath().substring(1);
-                    c.setPath(cPath);
-                    c.setComponent(cPath + "/index");
-                    c.setName(cPath.substring(0,1).toUpperCase() + cPath.substring(1));
-                });
+                if (ObjectUtil.isNotEmpty(e.getChildren())) {
+                    childComponentFullFill(e.getChildren());
+                }
             });
-            List<ComponentVo> componentList = JSON.parseArray(JSON.toJSONString(pidListMap.get(0)), ComponentVo.class);
+
+            List<ComponentVo> componentList = JSON.parseArray(JSON.toJSONString(parentIdListMap.get(0)), ComponentVo.class);
             //取出顶层节点的对象，数据库中的顶层节点的"ParentId"为0,注意是ParentId
+            System.out.println(JSON.toJSON(componentList));
+
             return Result.ok().success(true).data("records",JSON.toJSON(componentList));
         } else {
             return Result.error()
@@ -115,6 +110,20 @@ public class LoginController {
                     .message(ResultCode.MENU_COMPONENT_NOT_ASSIGNED.getMessage())
                     .success(false);
         }
+    }
+
+    public void childComponentFullFill(List<TbSysMenu> tbSysMenus) {
+        tbSysMenus.forEach(e -> {
+            if (ObjectUtil.isNotEmpty(e.getChildren())){
+                childComponentFullFill(e.getChildren());
+            }
+            String ePath = e.getPath().substring(1);
+            e.setPath(ePath);
+            e.setComponent(ePath + "/index");
+            TbSysMenuMeta meta = tbSysMenuMetaService.getOne(new LambdaQueryWrapper<TbSysMenuMeta>().eq(TbSysMenuMeta::getMenuId, e.getId()));
+            e.setMeta(meta);
+
+        });
     }
 
 }

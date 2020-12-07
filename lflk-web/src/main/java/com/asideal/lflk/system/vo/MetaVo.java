@@ -5,6 +5,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+/**
+ * 组件Meta属性
+ * @author ZhangJie
+ */
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @ApiModel(value="组件meta属性", description="组件中meta属性设置")

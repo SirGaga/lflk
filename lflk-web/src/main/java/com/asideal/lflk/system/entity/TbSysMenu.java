@@ -1,6 +1,7 @@
 package com.asideal.lflk.system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -9,6 +10,7 @@ import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -30,18 +32,18 @@ public class TbSysMenu implements Serializable {
     private Integer id;
 
     @ApiModelProperty(value = "菜单名称 菜单名称")
-    private String menuName;
+    private String name;
 
     @ApiModelProperty(value = "父级菜单id 父级菜单id")
     private Integer parentId;
 
     @ApiModelProperty(value = "跳转url 跳转路径")
-    private String url;
+    private String path;
 
     @ApiModelProperty(value = "菜单内排序 菜单内排序")
     private Integer orderNum;
 
-    @ApiModelProperty(value = "菜单类型 类型，0菜单，1按钮")
+    @ApiModelProperty(value = "菜单类型 类型，0目录，1菜单，2按钮")
     private String type;
 
     @ApiModelProperty(value = "图标样式 内联样式")
@@ -49,12 +51,6 @@ public class TbSysMenu implements Serializable {
 
     @ApiModelProperty(value = "是否可用 0可用，1不可用")
     private Integer disabled;
-
-    @ApiModelProperty(value = "是否打开 0不展开，1展开")
-    private String open;
-
-    @ApiModelProperty(value = "是否是子菜单 0代表不是子菜单，1代表是子菜单")
-    private Integer child;
 
     @ApiModelProperty(value = "创建人id 创建人id")
     private Integer createUserId;
@@ -83,11 +79,17 @@ public class TbSysMenu implements Serializable {
     @ApiModelProperty(value = "是否隐藏，是否隐藏，0代表不隐藏，1代表隐藏")
     private String component;
 
-    @ApiModelProperty(value = "前端路径")
-    private String path;
+    @ApiModelProperty(value = "子目录、子菜单")
+    @TableField(exist = false)
+    private List<TbSysMenu> children;
 
-    @ApiModelProperty(value = "固钉，0代表不是固钉，1代表是固钉")
-    private Integer affix;
+    @ApiModelProperty(value = "组件属性")
+    @TableField(exist = false)
+    private TbSysMenuMeta meta;
+
+    @ApiModelProperty(value = "组件重定向属性")
+    @TableField(exist = false)
+    private String redirect;
 
 
 }

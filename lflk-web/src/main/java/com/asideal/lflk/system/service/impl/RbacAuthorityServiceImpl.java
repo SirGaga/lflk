@@ -38,11 +38,11 @@ public class RbacAuthorityServiceImpl implements RbacAuthorityService {
             List<TbSysRoleMenu> tbSysRoleMenus = tbSysRoleMenuService.selectByRoleNames(roleNames);
             List<TbSysMenu> tbSysMenus = tbSysMenuService.getBaseMapper().selectBatchIds(
                     tbSysRoleMenus.stream().map(e -> e.getId()).collect(Collectors.toList())
-            ).stream().filter(e -> StrUtil.isNotEmpty(e.getUrl())).collect(Collectors.toList());
+            ).stream().filter(e -> StrUtil.isNotEmpty(e.getPath())).collect(Collectors.toList());
 
             // 将菜单url和requestURI进行比较
             for (TbSysMenu menu : tbSysMenus) {
-                if (antPathMatcher.match(menu.getUrl(), request.getRequestURI())) {
+                if (antPathMatcher.match(menu.getPath(), request.getRequestURI())) {
                     hasPermission = true;
                     break;
                 }
