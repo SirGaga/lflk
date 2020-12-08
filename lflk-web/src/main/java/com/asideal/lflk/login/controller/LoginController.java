@@ -4,6 +4,7 @@ package com.asideal.lflk.login.controller;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
@@ -42,6 +43,8 @@ import java.util.stream.Collectors;
 @CrossOrigin
 @Log4j2
 public class LoginController {
+
+    public static final String PATH_SEPARATOR = "/";
 
     @Resource
     private TbSysMenuService tbSysMenuService;
@@ -87,11 +90,13 @@ public class LoginController {
             components.stream().forEach(item -> item.setChildren(parentIdListMap.get(item.getId())));
 
             parentIdListMap.get(0).forEach(e -> {
+                // 这里后期要进行改造，避免出现多级菜单导致 redirect 不对的情况
                 String suffix = e.getChildren().stream().filter(p -> p.getOrderNum() == 1).map(TbSysMenu::getPath).collect(Collectors.toList()).get(0);
-                e.setRedirect((e.getPath()+suffix).replace("//","/"));
+                if (StrUtil.isNotEmpty(suffix)) {
+                    e.setRedirect((e.getPath() + PATH_SEPARATOR + suffix).replace("//","/"));
+                }
                 TbSysMenuMeta meta = tbSysMenuMetaService.getOne(new LambdaQueryWrapper<TbSysMenuMeta>().eq(TbSysMenuMeta::getMenuId, e.getId()));
                 if(e.getPath().length()>1) {
-
                     e.setMeta(meta);
                 }
                 if (ObjectUtil.isNotEmpty(e.getChildren())) {
@@ -101,8 +106,6 @@ public class LoginController {
 
             List<ComponentVo> componentList = JSON.parseArray(JSON.toJSONString(parentIdListMap.get(0)), ComponentVo.class);
             //取出顶层节点的对象，数据库中的顶层节点的"ParentId"为0,注意是ParentId
-            System.out.println(JSON.toJSON(componentList));
-
             return Result.ok().success(true).data("records",JSON.toJSON(componentList));
         } else {
             return Result.error()
@@ -117,9 +120,7 @@ public class LoginController {
             if (ObjectUtil.isNotEmpty(e.getChildren())){
                 childComponentFullFill(e.getChildren());
             }
-            String ePath = e.getPath().substring(1);
-            e.setPath(ePath);
-            e.setComponent(ePath + "/index");
+            e.setComponent(e.getComponent() + "/index");
             TbSysMenuMeta meta = tbSysMenuMetaService.getOne(new LambdaQueryWrapper<TbSysMenuMeta>().eq(TbSysMenuMeta::getMenuId, e.getId()));
             e.setMeta(meta);
 

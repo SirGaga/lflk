@@ -91,5 +91,9 @@ public class TbSysMenu implements Serializable {
     @TableField(exist = false)
     private String redirect;
 
+//    @ApiModelProperty(value = "是否包含子菜单")
+//    @TableField(exist = false)
+//    private Boolean hasChildren;
+
 
 }

@@ -23,4 +23,10 @@ public interface TbSysMenuService extends IService<TbSysMenu> {
      */
     List<TbSysMenu> getComponentByRoleNames(List<String> roleNames);
 
+    /**
+     * 获取前端页面需要的菜单列表
+     * @return 返回menu集合
+     */
+    List<TbSysMenu> getMenuTreeTable();
+
 }

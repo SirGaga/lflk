@@ -21,4 +21,10 @@ public interface TbSysMenuMapper extends BaseMapper<TbSysMenu> {
      * @return 返回菜单中的组件集合
      */
     List<TbSysMenu> getComponentByRoleNames(@Param("roleNames") List<String> roleNames);
+
+    /**
+     * 获取前端页面需要的菜单列表
+     * @return 返回menu集合
+     */
+    List<TbSysMenu> getMenuTreeTable();
 }

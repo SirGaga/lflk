@@ -1,6 +1,7 @@
 package com.asideal.lflk.system.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
@@ -14,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,9 +37,16 @@ public class TbSysMenuController {
     @ApiOperation(value = "菜单树信息",notes = "全量查询菜单树信息")
     @GetMapping("/tree")
     public Result getRoleTree(){
-        List<TbSysMenu> list = tbSysMenuService.list();
+        List<TbSysMenu> list = tbSysMenuService.getMenuTreeTable();
 
-        return Result.ok().data("result",true).data("records",list);
+        Map<Integer,List<TbSysMenu>> parentIdListMap = list.stream().collect(Collectors.groupingBy(TbSysMenu::getParentId));
+
+        list.stream().forEach(item -> {
+            item.setChildren(parentIdListMap.get(item.getId()));
+            //item.setHasChildren(ObjectUtil.isNotEmpty(item.getChildren()));
+        });
+
+        return Result.ok().data("records", JSON.toJSON(parentIdListMap.get(0))).success(true);
     }
 
     @ApiOperation(value = "新增菜单", notes = "根据菜单实体新增菜单")

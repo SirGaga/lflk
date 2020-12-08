@@ -23,4 +23,9 @@ public class TbSysMenuServiceImpl extends ServiceImpl<TbSysMenuMapper, TbSysMenu
     public List<TbSysMenu> getComponentByRoleNames(List<String> roleNames) {
         return this.baseMapper.getComponentByRoleNames(roleNames);
     }
+
+    @Override
+    public List<TbSysMenu> getMenuTreeTable() {
+        return this.baseMapper.getMenuTreeTable();
+    }
 }

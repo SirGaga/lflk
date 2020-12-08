@@ -34,7 +34,6 @@ public class JwtTokenUtils implements InitializingBean {
     public void afterPropertiesSet() {
 
         byte[] keyBytes = Decoders.BASE64.decode(SECRET);
-        System.out.println(keyBytes);
         key = Keys.hmacShaKeyFor(keyBytes);
     }
 
@@ -61,24 +60,36 @@ public class JwtTokenUtils implements InitializingBean {
                 .compact();
     }
 
-    //获取token自定义属性
+    /**
+     * 获取token自定义属性
+     * @param token 前端请求header中携带的token
+     * @return 返回JWT中自定义的一些属性
+     */
     public static Map<String,Object> getClaims(String token){
         Map<String,Object> claims = null;
         try {
             claims = getTokenBody(token);
-        }catch (Exception e) {
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return claims;
     }
 
 
-
-    // 从token中获取用户名
+    /**
+     * 从token中获取用户名
+     * @param token 前端请求header中携带的token
+     * @return 返回subject，再通过相关方法进行获取更详细的信息
+     */
     public static String getUsername(String token){
         return getTokenBody(token).getSubject();
     }
 
-    // 是否已过期
+    /**
+     * 验证token是否已经过期
+     * @param token 前端请求header中携带的token
+     * @return 返回布尔值，true代表已经过期，false代表未过期
+     */
     public static boolean isExpiration(String token){
         return getTokenBody(token).getExpiration().before(new Date());
     }
