@@ -1,5 +1,6 @@
 package com.asideal.lflk.system.entity;
 
+import com.asideal.lflk.base.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -9,7 +10,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,7 +23,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="TbSysUser对象", description="用户表 ")
-public class TbSysUser implements Serializable {
+public class TbSysUser extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -51,24 +51,6 @@ public class TbSysUser implements Serializable {
 
     @ApiModelProperty(value = "最近登录IP 最近登录的ip地址")
     private String lastLoginIp;
-
-    @ApiModelProperty(value = "创建人id 创建人id")
-    private Integer createUserId;
-
-    @ApiModelProperty(value = "创建人名称 创建人姓名")
-    private String createUserName;
-
-    @ApiModelProperty(value = "创建时间 创建时间")
-    private Date createTime;
-
-    @ApiModelProperty(value = "更新人id 更新人id")
-    private Integer updateUserId;
-
-    @ApiModelProperty(value = "更新人姓名 更新人姓名")
-    private String updateUserName;
-
-    @ApiModelProperty(value = "最后更新时间 最后更新时间")
-    private Date updateTime;
 
     @ApiModelProperty(value = "用户密码 用户密码")
     private String password;

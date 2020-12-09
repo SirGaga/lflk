@@ -14,7 +14,7 @@
         ) and component is not null and disabled = '0'
     </select>
     <select id="getMenuTreeTable" resultType="TbSysMenu">
-        select a.id, a.icon, if(title is not null, title, name) as name, parent_id ,hidden, path, create_time, order_num
+        select a.id, a.icon, if(title is not null, title, name) as name, if(title is not null, title, name) as label, parent_id ,hidden, path, create_time, order_num
         from (
             select menu.id as id, meta.icon as icon, menu.name as name, meta.title as title,menu.parent_id as parent_id, menu.hidden as hidden, menu.create_time, menu.path, menu.order_num
             from tb_sys_menu menu

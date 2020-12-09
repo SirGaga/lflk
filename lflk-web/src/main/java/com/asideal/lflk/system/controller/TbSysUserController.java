@@ -1,8 +1,8 @@
 package com.asideal.lflk.system.controller;
 
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.asideal.lflk.base.controller.BaseController;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
@@ -12,7 +12,6 @@ import com.asideal.lflk.system.service.TbSysUserService;
 import com.asideal.lflk.system.vo.UserVo;
 import com.asideal.lflk.utils.Password;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
@@ -22,11 +21,9 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Calendar;
 
 /**
  * <p>
@@ -41,7 +38,7 @@ import java.util.Calendar;
 @RequestMapping("/system/user")
 @CrossOrigin
 @Log4j2
-public class TbSysUserController {
+public class TbSysUserController extends BaseController {
 
     @Resource
     private TbSysUserService tbSysUserService;
@@ -83,11 +80,7 @@ public class TbSysUserController {
     public Result updateUserById(@PathVariable Integer id, @RequestBody TbSysUser tbSysUser) {
         log.info("更新用户===>用户id："+id);
         tbSysUser.setPassword(Password.QuickPassword(tbSysUser.getPwd()));
-        Authentication authentication = authenticationService.getAuthentication();
-        TbSysUser operateUser = tbSysUserService.getOne(new LambdaUpdateWrapper<TbSysUser>().eq(TbSysUser::getUserName, authentication.getName()));
-        tbSysUser.setUpdateTime(DateUtil.date(Calendar.getInstance()));
-        tbSysUser.setUpdateUserId(operateUser.getId());
-        tbSysUser.setUpdateUserName(operateUser.getUserName());
+        prepareUpdateInfo(tbSysUser);
         boolean b = tbSysUserService.updateById(tbSysUser);
         if (b) {
             return Result.ok().success(true);
@@ -101,14 +94,7 @@ public class TbSysUserController {
     public Result saveUser(@RequestBody TbSysUser tbSysUser){
         // 保存数据前数据准备
         tbSysUser.setPassword(Password.QuickPassword(tbSysUser.getPwd()));
-        Authentication authentication = authenticationService.getAuthentication();
-        TbSysUser operateUser = tbSysUserService.getOne(new LambdaUpdateWrapper<TbSysUser>().eq(TbSysUser::getUserName, authentication.getName()));
-        tbSysUser.setCreateTime(DateUtil.date(Calendar.getInstance()));
-        tbSysUser.setCreateUserId(operateUser.getId());
-        tbSysUser.setCreateUserName(operateUser.getUserName());
-        tbSysUser.setUpdateTime(DateUtil.date(Calendar.getInstance()));
-        tbSysUser.setUpdateUserId(operateUser.getId());
-        tbSysUser.setUpdateUserName(operateUser.getUserName());
+        this.prepareSaveInfo(tbSysUser);
         boolean b = tbSysUserService.save(tbSysUser);
         if (b) {
             return Result.ok().success(true);

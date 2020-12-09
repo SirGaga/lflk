@@ -2,6 +2,7 @@ package com.asideal.lflk.system.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.asideal.lflk.base.controller.BaseController;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/system/menu")
 @Api(value = "系统菜单管理模块",tags = "系统菜单接口")
 @CrossOrigin
-public class TbSysMenuController {
+public class TbSysMenuController extends BaseController {
     @Resource
     private TbSysMenuService tbSysMenuService;
 
@@ -52,6 +53,7 @@ public class TbSysMenuController {
     @ApiOperation(value = "新增菜单", notes = "根据菜单实体新增菜单")
     @PostMapping("/add")
     public Result addMenu(@RequestBody TbSysMenu menu){
+        prepareSaveInfo(menu);
         boolean b = tbSysMenuService.save(menu);
         if (b) {
             return Result.ok().data("result", true);
@@ -66,6 +68,7 @@ public class TbSysMenuController {
     })
     @PutMapping("/{id}")
     public Result updateMenu(@PathVariable Integer id, @RequestBody TbSysMenu menu) {
+        prepareUpdateInfo(menu);
         boolean b = tbSysMenuService.updateById(menu);
         if (b) {
             return Result.ok().data("result", true);
