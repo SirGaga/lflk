@@ -11,6 +11,10 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * RabbitMQ消息实体类
+ * @author MengTianYou
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)

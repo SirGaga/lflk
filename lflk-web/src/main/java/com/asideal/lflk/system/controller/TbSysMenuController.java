@@ -7,6 +7,8 @@ import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysMenu;
+import com.asideal.lflk.system.entity.TbSysMenuMeta;
+import com.asideal.lflk.system.service.TbSysMenuMetaService;
 import com.asideal.lflk.system.service.TbSysMenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -35,6 +37,9 @@ public class TbSysMenuController extends BaseController {
     @Resource
     private TbSysMenuService tbSysMenuService;
 
+    @Resource
+    private TbSysMenuMetaService tbSysMenuMetaService;
+
     @ApiOperation(value = "菜单树信息",notes = "全量查询菜单树信息")
     @GetMapping("/tree")
     public Result getRoleTree(){
@@ -42,11 +47,7 @@ public class TbSysMenuController extends BaseController {
 
         Map<Integer,List<TbSysMenu>> parentIdListMap = list.stream().collect(Collectors.groupingBy(TbSysMenu::getParentId));
 
-        list.stream().forEach(item -> {
-            item.setChildren(parentIdListMap.get(item.getId()));
-            //item.setHasChildren(ObjectUtil.isNotEmpty(item.getChildren()));
-        });
-
+        list.forEach(item -> item.setChildren(parentIdListMap.get(item.getId())));
         return Result.ok().data("records", JSON.toJSON(parentIdListMap.get(0))).success(true);
     }
 
@@ -54,9 +55,29 @@ public class TbSysMenuController extends BaseController {
     @PostMapping("/add")
     public Result addMenu(@RequestBody TbSysMenu menu){
         prepareSaveInfo(menu);
-        boolean b = tbSysMenuService.save(menu);
+        boolean b;
+        // 判断是否为菜单，
+        if (MENU_TYPE_DIR.equals(menu.getType())) {
+            menu.setComponent(MENU_TYPE_DIR_COMPONENT);
+        }
+        if (MENU_TYPE_MENU.equals(menu.getType()) || MENU_TYPE_DIR.equals(menu.getType())) {
+            TbSysMenuMeta meta = new TbSysMenuMeta();
+            meta.setIcon(menu.getIcon());
+            meta.setTitle(menu.getTitle());
+            meta.setAffix(false);
+            b = tbSysMenuService.save(menu);
+            if (b) {
+                meta.setMenuId(menu.getId());
+                b = tbSysMenuMetaService.save(meta);
+            }
+        } else {
+            menu.setComponent(null);
+            menu.setIcon(null);
+            b = tbSysMenuService.save(menu);
+        }
+
         if (b) {
-            return Result.ok().data("result", true);
+            return Result.ok().success(true);
         } else {
             throw new BusinessException(ResultCode.MENU_ADD_FAILURE.getCode(),ResultCode.MENU_ADD_FAILURE.getMessage());
         }
@@ -66,7 +87,7 @@ public class TbSysMenuController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "菜单id", required = true, dataType = "Integer")
     })
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public Result updateMenu(@PathVariable Integer id, @RequestBody TbSysMenu menu) {
         prepareUpdateInfo(menu);
         boolean b = tbSysMenuService.updateById(menu);
@@ -81,7 +102,7 @@ public class TbSysMenuController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "菜单id", required = true, dataType = "Integer")
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public Result deleteMenuById(@PathVariable Integer id){
         boolean b = tbSysMenuService.removeById(id);
         if (b) {

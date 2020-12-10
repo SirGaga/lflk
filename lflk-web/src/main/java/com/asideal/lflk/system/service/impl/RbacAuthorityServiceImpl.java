@@ -37,7 +37,7 @@ public class RbacAuthorityServiceImpl implements RbacAuthorityService {
             // 获取权限范围内的菜单
             List<TbSysRoleMenu> tbSysRoleMenus = tbSysRoleMenuService.selectByRoleNames(roleNames);
             List<TbSysMenu> tbSysMenus = tbSysMenuService.getBaseMapper().selectBatchIds(
-                    tbSysRoleMenus.stream().map(e -> e.getId()).collect(Collectors.toList())
+                    tbSysRoleMenus.stream().map(e -> e.getMenuId()).collect(Collectors.toList())
             ).stream().filter(e -> StrUtil.isNotEmpty(e.getPath())).collect(Collectors.toList());
 
             // 将菜单url和requestURI进行比较

@@ -77,6 +77,14 @@ public class TbSysMenu extends BaseEntity implements Serializable {
     @TableField(exist = false)
     private String label;
 
+    @ApiModelProperty(value = "meta属性需要的属性")
+    @TableField(exist = false)
+    private String title;
+
+    @ApiModelProperty(value = "meta属性需要的属性")
+    @TableField(exist = false)
+    private String affix;
+
 //    @ApiModelProperty(value = "是否包含子菜单")
 //    @TableField(exist = false)
 //    private Boolean hasChildren;

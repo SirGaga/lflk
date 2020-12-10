@@ -21,6 +21,31 @@ import java.util.Calendar;
  */
 public class BaseController {
 
+    /**
+     * menu类型
+     * 目录
+     */
+    public static final String MENU_TYPE_DIR = "0";
+
+    /**
+     * menu类型
+     * 菜单
+     */
+    public static final String MENU_TYPE_MENU = "1";
+
+    /**
+     * menu类型
+     * 按钮
+     */
+    public static final String MENU_TYPE_BUTTON = "2";
+
+    /**
+     * menu类型
+     * 目录
+     * 组件字段默认值
+     */
+    public static final String MENU_TYPE_DIR_COMPONENT = "Layout";
+
     @Resource
     private AuthenticationService authenticationService;
 
