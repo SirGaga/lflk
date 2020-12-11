@@ -41,5 +41,8 @@ public class TbSysMenuMeta implements Serializable {
     @ApiModelProperty(value = "菜单id")
     private Integer menuId;
 
+    @ApiModelProperty(value = "是否删除逻辑，0为未删除，1为已删除")
+    private Integer deleted;
+
 
 }

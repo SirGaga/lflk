@@ -10,6 +10,7 @@ import com.asideal.lflk.system.entity.TbSysMenu;
 import com.asideal.lflk.system.entity.TbSysMenuMeta;
 import com.asideal.lflk.system.service.TbSysMenuMetaService;
 import com.asideal.lflk.system.service.TbSysMenuService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -55,27 +56,28 @@ public class TbSysMenuController extends BaseController {
     @PostMapping("/add")
     public Result addMenu(@RequestBody TbSysMenu menu){
         prepareSaveInfo(menu);
-        boolean b;
+        boolean b = false;
         // 判断是否为菜单，
         if (MENU_TYPE_DIR.equals(menu.getType())) {
             menu.setComponent(MENU_TYPE_DIR_COMPONENT);
+            menu.setName(menu.getPath().substring(1).substring(0,1).toUpperCase() + menu.getPath().substring(1).substring(1));
         }
         if (MENU_TYPE_MENU.equals(menu.getType()) || MENU_TYPE_DIR.equals(menu.getType())) {
             TbSysMenuMeta meta = new TbSysMenuMeta();
             meta.setIcon(menu.getIcon());
             meta.setTitle(menu.getTitle());
-            meta.setAffix(false);
+            meta.setAffix(menu.getAffix().equals(MENU_META_AFFIX));
             b = tbSysMenuService.save(menu);
             if (b) {
                 meta.setMenuId(menu.getId());
                 b = tbSysMenuMetaService.save(meta);
             }
-        } else {
+        } else if (MENU_TYPE_BUTTON.equals(menu.getType())){
             menu.setComponent(null);
             menu.setIcon(null);
+            menu.setName(menu.getTitle());
             b = tbSysMenuService.save(menu);
         }
-
         if (b) {
             return Result.ok().success(true);
         } else {
@@ -92,7 +94,7 @@ public class TbSysMenuController extends BaseController {
         prepareUpdateInfo(menu);
         boolean b = tbSysMenuService.updateById(menu);
         if (b) {
-            return Result.ok().data("result", true);
+            return Result.ok().success(true);
         } else {
             throw new BusinessException(ResultCode.MENU_UPDATE_FAILURE.getCode(),ResultCode.MENU_UPDATE_FAILURE.getMessage());
         }
@@ -102,11 +104,15 @@ public class TbSysMenuController extends BaseController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "菜单id", required = true, dataType = "Integer")
     })
-    @DeleteMapping("/delete/{id}")
-    public Result deleteMenuById(@PathVariable Integer id){
-        boolean b = tbSysMenuService.removeById(id);
+    @DeleteMapping("/delete")
+    public Result deleteMenuById(@RequestBody List<Integer> ids){
+        // 要考虑到级联删除
+        // 必须要先通过id获取获取下边的子菜单也就是parentId为id的数据，
+        // 而且删除只考虑本身和他的下级
+        boolean b = tbSysMenuService.removeByIds(ids);
+        tbSysMenuMetaService.remove(new LambdaQueryWrapper<TbSysMenuMeta>().in(TbSysMenuMeta::getMenuId,ids));
         if (b) {
-            return Result.ok().data("result", true);
+            return Result.ok().success(true);
         } else {
             throw new BusinessException(ResultCode.MENU_DELETE_FAILURE.getCode(),ResultCode.MENU_DELETE_FAILURE.getMessage());
         }

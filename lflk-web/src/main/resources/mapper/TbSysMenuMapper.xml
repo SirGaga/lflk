@@ -20,6 +20,7 @@
             from tb_sys_menu menu
             left join tb_sys_menu_meta meta
             on menu.id = meta.menu_id
+            where menu.deleted = '0'
         ) a
     </select>
 </mapper>

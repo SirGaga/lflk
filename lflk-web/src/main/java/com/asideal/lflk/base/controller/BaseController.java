@@ -46,6 +46,8 @@ public class BaseController {
      */
     public static final String MENU_TYPE_DIR_COMPONENT = "Layout";
 
+    public static final String MENU_META_AFFIX = "1";
+
     @Resource
     private AuthenticationService authenticationService;
 
