@@ -41,7 +41,7 @@ public class TbSysMenu extends BaseEntity implements Serializable {
     private String path;
 
     @ApiModelProperty(value = "菜单内排序 菜单内排序")
-    private Integer orderNum;
+    private int orderNum;
 
     @ApiModelProperty(value = "菜单类型 类型，0目录，1菜单，2按钮")
     private String type;

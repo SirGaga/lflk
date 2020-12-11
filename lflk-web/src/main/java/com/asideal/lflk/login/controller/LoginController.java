@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -84,10 +85,11 @@ public class LoginController {
     public Result getComponent(@RequestBody List<String> roleNames){
         List<TbSysMenu> components = tbSysMenuService.getComponentByRoleNames(roleNames);
         if(CollUtil.isNotEmpty(components)){
+            components.sort(Comparator.comparing(TbSysMenu::getOrderNum));
             // 获取menu
             Map<Integer,List<TbSysMenu>> parentIdListMap = components.stream().collect(Collectors.groupingBy(TbSysMenu::getParentId));
 
-            components.stream().forEach(item -> item.setChildren(parentIdListMap.get(item.getId())));
+            components.forEach(item -> item.setChildren(parentIdListMap.get(item.getId())));
 
             parentIdListMap.get(0).forEach(e -> {
                 // 这里后期要进行改造，避免出现多级菜单导致 redirect 不对的情况
