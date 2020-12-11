@@ -108,7 +108,7 @@ public class TbSysMenuController extends BaseController {
                 meta.setTitle(menu.getTitle());
                 meta.setAffix(menu.getAffix().equals(MENU_META_AFFIX));
                 meta.setMenuId(menu.getId());
-                tbSysMenuMetaService.update(meta, new LambdaUpdateWrapper<TbSysMenuMeta>().eq(TbSysMenuMeta::getMenuId,menu.getId()));
+                tbSysMenuMetaService.saveOrUpdate(meta, new LambdaUpdateWrapper<TbSysMenuMeta>().eq(TbSysMenuMeta::getMenuId,menu.getId()));
             } else if (MENU_TYPE_BUTTON.equals(menu.getType())){
                 menu.setComponent(null);
                 menu.setIcon(null);
