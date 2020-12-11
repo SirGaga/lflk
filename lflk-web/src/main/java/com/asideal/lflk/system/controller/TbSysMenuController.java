@@ -8,9 +8,12 @@ import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysMenu;
 import com.asideal.lflk.system.entity.TbSysMenuMeta;
+import com.asideal.lflk.system.entity.TbSysRoleMenu;
 import com.asideal.lflk.system.service.TbSysMenuMetaService;
 import com.asideal.lflk.system.service.TbSysMenuService;
+import com.asideal.lflk.system.service.TbSysRoleMenuService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -40,6 +43,9 @@ public class TbSysMenuController extends BaseController {
 
     @Resource
     private TbSysMenuMetaService tbSysMenuMetaService;
+
+    @Resource
+    private TbSysRoleMenuService tbSysRoleMenuService;
 
     @ApiOperation(value = "菜单树信息",notes = "全量查询菜单树信息")
     @GetMapping("/tree")
@@ -91,11 +97,27 @@ public class TbSysMenuController extends BaseController {
     })
     @PutMapping("/update/{id}")
     public Result updateMenu(@PathVariable Integer id, @RequestBody TbSysMenu menu) {
-        prepareUpdateInfo(menu);
-        boolean b = tbSysMenuService.updateById(menu);
-        if (b) {
+        try {
+            if (MENU_TYPE_DIR.equals(menu.getType())) {
+                menu.setComponent(MENU_TYPE_DIR_COMPONENT);
+                menu.setName(menu.getPath().substring(1).substring(0,1).toUpperCase() + menu.getPath().substring(1).substring(1));
+            }
+            if (MENU_TYPE_MENU.equals(menu.getType()) || MENU_TYPE_DIR.equals(menu.getType())) {
+                TbSysMenuMeta meta = new TbSysMenuMeta();
+                meta.setIcon(menu.getIcon());
+                meta.setTitle(menu.getTitle());
+                meta.setAffix(menu.getAffix().equals(MENU_META_AFFIX));
+                meta.setMenuId(menu.getId());
+                tbSysMenuMetaService.update(meta, new LambdaUpdateWrapper<TbSysMenuMeta>().eq(TbSysMenuMeta::getMenuId,menu.getId()));
+            } else if (MENU_TYPE_BUTTON.equals(menu.getType())){
+                menu.setComponent(null);
+                menu.setIcon(null);
+                menu.setName(menu.getTitle());
+            }
+            prepareUpdateInfo(menu);
+            tbSysMenuService.updateById(menu);
             return Result.ok().success(true);
-        } else {
+        } catch (Exception e) {
             throw new BusinessException(ResultCode.MENU_UPDATE_FAILURE.getCode(),ResultCode.MENU_UPDATE_FAILURE.getMessage());
         }
     }
@@ -111,6 +133,7 @@ public class TbSysMenuController extends BaseController {
         // 而且删除只考虑本身和他的下级
         boolean b = tbSysMenuService.removeByIds(ids);
         tbSysMenuMetaService.remove(new LambdaQueryWrapper<TbSysMenuMeta>().in(TbSysMenuMeta::getMenuId,ids));
+        tbSysRoleMenuService.remove(new LambdaQueryWrapper<TbSysRoleMenu>().in(TbSysRoleMenu::getMenuId,ids));
         if (b) {
             return Result.ok().success(true);
         } else {

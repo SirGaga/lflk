@@ -58,7 +58,7 @@ public class TbSysUserServiceImpl extends ServiceImpl<TbSysUserMapper, TbSysUser
             // 根据角色id批量查询
             List<TbSysRole> tbSysRoles = tbSysRoleService.getBaseMapper()
                     .selectBatchIds(
-                            sysUserRoles.stream().map(e -> e.getId()).collect(Collectors.toList())
+                            sysUserRoles.stream().map(e -> e.getRoleId()).collect(Collectors.toList())
                     );
 
             Set<SimpleGrantedAuthority> authorities = new HashSet<>();
