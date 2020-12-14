@@ -2,4 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asideal.lflk.system.mapper.TbSysRoleMapper">
 
+    <select id="findRoleMenuByPage" resultType="TbSysRole">
+select * from  (
+        select a.*,b.menu_id from tb_sys_role a left join (
+            select role_id,GROUP_CONCAT(menu_id) as menu_id from tb_sys_role_menu group by role_id
+        ) b on a.id = b.role_id ) c
+    </select>
+
 </mapper>

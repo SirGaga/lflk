@@ -49,7 +49,7 @@ public class TbSysMenuController extends BaseController {
 
     @ApiOperation(value = "菜单树信息",notes = "全量查询菜单树信息")
     @GetMapping("/tree")
-    public Result getRoleTree(){
+    public Result getMenuTree(){
         List<TbSysMenu> list = tbSysMenuService.getMenuTreeTable();
 
         Map<Integer,List<TbSysMenu>> parentIdListMap = list.stream().collect(Collectors.groupingBy(TbSysMenu::getParentId));

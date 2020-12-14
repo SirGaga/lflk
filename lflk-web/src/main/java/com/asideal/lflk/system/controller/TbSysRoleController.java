@@ -5,20 +5,21 @@ import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysRole;
+import com.asideal.lflk.system.entity.TbSysRoleMenu;
+import com.asideal.lflk.system.service.TbSysRoleMenuService;
 import com.asideal.lflk.system.service.TbSysRoleService;
 import com.asideal.lflk.system.vo.RoleVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -36,6 +37,9 @@ public class TbSysRoleController {
     @Resource
     private TbSysRoleService tbSysRoleService;
 
+    @Resource
+    private TbSysRoleMenuService tbSysRoleMenuService;
+
     /**
      * 查询所有角色
      * @return  返回角色列表
@@ -44,10 +48,22 @@ public class TbSysRoleController {
     @PostMapping("/")
     public Result findRoleAll(@RequestBody RoleVo roleVo){
         // 对用户进行分页，泛型中注入的就是返回数据的实体
-        Page<TbSysRole> page = new Page<>(roleVo.getCurrent(),roleVo.getSize());
-        IPage<TbSysRole> rolePage = tbSysRoleService.page(page, getQueryWrapper(roleVo));
+        Page<TbSysRole> page = new Page<>(roleVo.getPage(),roleVo.getLimit());
+        IPage<TbSysRole> rolePage = tbSysRoleService.findRoleMenuByPage(page, getQueryWrapper(roleVo));
 
-        return Result.ok().data("total",rolePage.getTotal()).data("records",rolePage.getRecords());
+        return Result.ok().success(true).data("total",rolePage.getTotal()).data("records",rolePage.getRecords());
+    }
+
+    @ApiModelProperty(value = "通过角色获取所有的菜单", notes = "通过角色id获取所有的菜单id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer")
+    })
+    @PostMapping("/roleMenu/{id}")
+    public Result getMenuIdsByRoleId(@PathVariable Integer id){
+        List<Integer> roleIds = new ArrayList<>();
+        roleIds.add(id);
+        List<TbSysRoleMenu> roleMenus = tbSysRoleMenuService.selectByRoleIds(roleIds);
+        return Result.ok().success(true).data("records",roleMenus);
     }
 
     @ApiOperation(value = "新增角色", notes = "根据角色实体新增角色")
@@ -104,13 +120,8 @@ public class TbSysRoleController {
     public QueryWrapper<TbSysRole> getQueryWrapper(RoleVo roleVo){
         QueryWrapper<TbSysRole> queryWrapper = new QueryWrapper<>();
         if (ObjectUtils.isNotEmpty(roleVo)){
-            // 判断部门编码
-            if (StringUtils.isNotEmpty(roleVo.getRoleName())){
-                queryWrapper.eq("role_name",roleVo.getRoleName());
-            }
-            // 判断公民身份郑号
-            if (StringUtils.isNotEmpty(roleVo.getRoleNameCh())){
-                queryWrapper.like("role_name_ch",roleVo.getRoleNameCh());
+            if (StringUtils.isNotEmpty(roleVo.getNameFilter())){
+                queryWrapper.like("role_name", roleVo.getNameFilter()).or().like("role_name_ch", roleVo.getRoleNameCh());
             }
         }
         return queryWrapper;

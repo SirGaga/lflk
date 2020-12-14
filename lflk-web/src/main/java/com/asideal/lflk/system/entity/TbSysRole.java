@@ -1,13 +1,15 @@
 package com.asideal.lflk.system.entity;
 
+import com.asideal.lflk.base.entity.BaseEntity;
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -20,7 +22,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @ApiModel(value="TbSysRole对象", description="角色表 ")
-public class TbSysRole implements Serializable {
+public class TbSysRole extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -40,23 +42,8 @@ public class TbSysRole implements Serializable {
     @ApiModelProperty(value = "是否删除 是否删除，0逻辑未删除，1逻辑已删除")
     private Integer deleted;
 
-    @ApiModelProperty(value = "创建人id 创建人id")
-    private Integer createUserId;
-
-    @ApiModelProperty(value = "创建人名称 创建人姓名")
-    private String createUserName;
-
-    @ApiModelProperty(value = "创建时间 创建时间")
-    private Date createTime;
-
-    @ApiModelProperty(value = "更新人id 更新人id")
-    private String updateUserId;
-
-    @ApiModelProperty(value = "更新人姓名 更新人姓名")
-    private String updateUserName;
-
-    @ApiModelProperty(value = "最后更新时间 最后更新时间")
-    private Date updateTime;
-
+    @ApiModelProperty(value = "菜单id集合")
+    @TableField(exist = false)
+    private String menuId;
 
 }
