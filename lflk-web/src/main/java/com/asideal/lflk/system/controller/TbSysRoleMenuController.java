@@ -6,7 +6,9 @@ import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysRoleMenu;
 import com.asideal.lflk.system.service.TbSysRoleMenuService;
+import com.asideal.lflk.system.vo.RoleMenuVo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -49,6 +51,30 @@ public class TbSysRoleMenuController {
             return Result.ok().code(ResultCode.MENU_NOT_ASSIGNED.getCode()).message(ResultCode.MENU_NOT_ASSIGNED.getMessage()).data("result",false);
         }
     }
+
+    @ApiOperation(value = "根据角色id获取菜单id", notes = "根据角色id获取菜单id")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Integer")
+    })
+    @PostMapping("/add")
+    public Result saveRoleMenu(@RequestBody RoleMenuVo roleMenuVo) {
+        // 先根据roleMenu中的信息查询出符合条件的roleMenu，将其删除
+        // 根据roleMenu中的信息进行保存
+        try {
+            tbSysRoleMenuService.getBaseMapper().delete(new LambdaUpdateWrapper<TbSysRoleMenu>().eq(TbSysRoleMenu::getRoleId,roleMenuVo.getRoleId()));
+            List<TbSysRoleMenu> roleMenus = roleMenuVo.getMenuIds().stream().map(e -> {
+                TbSysRoleMenu tbSysRoleMenu = new TbSysRoleMenu();
+                tbSysRoleMenu.setRoleId(roleMenuVo.getRoleId());
+                tbSysRoleMenu.setMenuId(e);
+                return tbSysRoleMenu;
+            }).collect(Collectors.toList());
+            tbSysRoleMenuService.saveBatch(roleMenus);
+            return Result.ok().success(true);
+        } catch (Exception e) {
+            throw new BusinessException(ResultCode.ROLE_MENU_ADD_FAILURE.getCode(), ResultCode.ROLE_MENU_ADD_FAILURE.getMessage());
+        }
+    }
+
     @ApiOperation(value = "根据角色id获取更新角色菜单", notes = "根据角色id更新角色菜单")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "String")

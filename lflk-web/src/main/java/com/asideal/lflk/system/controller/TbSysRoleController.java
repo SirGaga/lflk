@@ -1,6 +1,7 @@
 package com.asideal.lflk.system.controller;
 
 
+import com.asideal.lflk.base.controller.BaseController;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
@@ -9,6 +10,7 @@ import com.asideal.lflk.system.entity.TbSysRoleMenu;
 import com.asideal.lflk.system.service.TbSysRoleMenuService;
 import com.asideal.lflk.system.service.TbSysRoleService;
 import com.asideal.lflk.system.vo.RoleVo;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -33,7 +35,7 @@ import java.util.List;
 @RequestMapping("/system/role")
 @Api(value = "系统权限管理模块",tags = "系统权限接口")
 @CrossOrigin
-public class TbSysRoleController {
+public class TbSysRoleController extends BaseController {
     @Resource
     private TbSysRoleService tbSysRoleService;
 
@@ -69,10 +71,11 @@ public class TbSysRoleController {
     @ApiOperation(value = "新增角色", notes = "根据角色实体新增角色")
     @PostMapping("/add")
     public Result addRole(@RequestBody TbSysRole role){
-        boolean b = tbSysRoleService.save(role);
-        if (b) {
-            return Result.ok().data("result", true);
-        } else {
+        try{
+            prepareSaveInfo(role);
+            boolean b = tbSysRoleService.save(role);
+            return Result.ok().success(true);
+        } catch (Exception e) {
             throw new BusinessException(ResultCode.ROLE_ADD_FAILURE.getCode(),ResultCode.ROLE_ADD_FAILURE.getMessage());
         }
     }
@@ -81,12 +84,13 @@ public class TbSysRoleController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer")
     })
-    @PutMapping("/{id}")
-    public Result updateUserById(@PathVariable Integer id, @RequestBody TbSysRole tbSysRole) {
-        boolean b = tbSysRoleService.updateById(tbSysRole);
-        if (b) {
-            return Result.ok().data("result", true);
-        } else {
+    @PutMapping("/update/{id}")
+    public Result updateUserById(@PathVariable Integer id, @RequestBody TbSysRole role) {
+        try {
+            prepareUpdateInfo(role);
+            boolean b = tbSysRoleService.updateById(role);
+            return Result.ok().success(true);
+        } catch (Exception e) {
             throw new BusinessException(ResultCode.ROLE_UPDATE_FAILURE.getCode(),ResultCode.ROLE_UPDATE_FAILURE.getMessage());
         }
     }
@@ -95,12 +99,13 @@ public class TbSysRoleController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer")
     })
-    @DeleteMapping("/{id}")
-    public Result deleteUserById(@PathVariable Integer id){
-        boolean b = tbSysRoleService.removeById(id);
-        if (b) {
-            return Result.ok().data("result", true);
-        } else {
+    @DeleteMapping("/delete")
+    public Result deleteRoleById(@RequestBody List<Integer> ids){
+        try {
+            tbSysRoleService.removeByIds(ids);
+            tbSysRoleMenuService.remove(new LambdaQueryWrapper<TbSysRoleMenu>().in(TbSysRoleMenu::getRoleId,ids));
+            return Result.ok().success(true);
+        } catch (Exception e) {
             throw new BusinessException(ResultCode.ROLE_DELETE_FAILURE.getCode(),ResultCode.ROLE_DELETE_FAILURE.getMessage());
         }
     }
@@ -121,7 +126,7 @@ public class TbSysRoleController {
         QueryWrapper<TbSysRole> queryWrapper = new QueryWrapper<>();
         if (ObjectUtils.isNotEmpty(roleVo)){
             if (StringUtils.isNotEmpty(roleVo.getNameFilter())){
-                queryWrapper.like("role_name", roleVo.getNameFilter()).or().like("role_name_ch", roleVo.getRoleNameCh());
+                queryWrapper.like("role_name", roleVo.getNameFilter()).or().like("role_name_ch", roleVo.getNameFilter());
             }
         }
         return queryWrapper;

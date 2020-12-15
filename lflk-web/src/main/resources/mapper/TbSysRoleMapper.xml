@@ -3,10 +3,16 @@
 <mapper namespace="com.asideal.lflk.system.mapper.TbSysRoleMapper">
 
     <select id="findRoleMenuByPage" resultType="TbSysRole">
-select * from  (
-        select a.*,b.menu_id from tb_sys_role a left join (
-            select role_id,GROUP_CONCAT(menu_id) as menu_id from tb_sys_role_menu group by role_id
-        ) b on a.id = b.role_id ) c
+        select * from  (
+            select a.*,b.menu_id from (
+                select * from tb_sys_role
+        <if test="ew.emptyOfWhere == false">
+            ${ew.customSqlSegment}
+        </if>
+            ) a
+            left join (
+                select role_id,GROUP_CONCAT(menu_id) as menu_id from tb_sys_role_menu  where deleted = '0' group by role_id
+            ) b on a.id = b.role_id ) c
     </select>
 
 </mapper>

@@ -18,6 +18,12 @@ import org.springframework.stereotype.Service;
 @Service
 public interface TbSysRoleService extends IService<TbSysRole> {
 
-    public IPage<TbSysRole> findRoleMenuByPage(Page<TbSysRole> page, QueryWrapper<TbSysRole> queryWrapper);
+    /**
+     * 分页查询用户菜单信息
+     * @param page 分页信息
+     * @param queryWrapper 查询条件
+     * @return
+     */
+    IPage<TbSysRole> findRoleMenuByPage(Page<TbSysRole> page, QueryWrapper<TbSysRole> queryWrapper);
 
 }
