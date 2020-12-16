@@ -1,8 +1,12 @@
 package com.asideal.lflk.listener;
 
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.NumberUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.asideal.lflk.system.entity.TbMessage;
 import com.asideal.lflk.system.service.impl.RabbitMqServiceImpl;
+import com.asideal.lflk.websocket.WebSocket;
 import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.rabbitmq.client.Channel;
 import lombok.extern.log4j.Log4j2;
@@ -12,16 +16,22 @@ import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.HashMap;
 
 @Component
 @Log4j2
 public class RabbitMqServiceListener {
     @Resource
     private RabbitMqServiceImpl rabbitService;
+    @Autowired
+    private WebSocket webSocket;
     /**
      * 正常监听并处理阿里推送队列消息
      * @param msgObj
@@ -105,6 +115,68 @@ public class RabbitMqServiceListener {
     public void receiveAli2MeMessageForDead(JSONObject msgObj, Message message, Channel channel) {
         log.info("接收到死信消息并自动签收:{}", msgObj);
     }
+    @RabbitListener(bindings = {
+        @QueueBinding(
+            value = @Queue(
+                    value = "${server2me-normal-queue}", durable = "false", exclusive = "false", autoDelete = "false"
+            ),
+            exchange = @Exchange(value = "${app.rabbitmq.exchange.server2me-normal-exchange}",type = "fanout",autoDelete = "false")//绑定交换机
+        )
+    })
+    public void receiveServer2MeMessage(JSONObject message) {
+        log.info("fanout广播式消费者1接收到的信息："+message);
+        double cpuUsedPc=message.getDouble("cpu");
+        double memTotal=message.getJSONObject("mem").getInteger("total");
+        double memUsed=message.getJSONObject("mem").getInteger("used");
+        BigDecimal memoryUsed=NumberUtil.round(memUsed*100/memTotal,2);
+        BigDecimal memAva=NumberUtil.round((memTotal-memUsed)/(1024*1024),2);
+        BigDecimal memUsedPc = NumberUtil.round(memUsed * 100 / memTotal, 2);
+        double diskUsedPc=message.getJSONObject("disk").getDouble("percent");
+        BigDecimal diskAva=NumberUtil.round(message.getJSONObject("disk").getDouble("ava")/(1024*1024),0);
+
+
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("cpu",cpuUsedPc);
+
+        JSONObject mem = new JSONObject();
+        mem.put("memoryUsed",memoryUsed);
+        mem.put("memoryAva",memAva);
+        jsonObject.put("memory",mem);
+
+        JSONObject disk = new JSONObject();
+        disk.put("diskUsed",diskUsedPc);
+        disk.put("diskAva",diskAva);
+        jsonObject.put("disk",disk);
+
+        jsonObject.put("time", DateUtil.now());
+
+
+        String key = DateUtil.format(DateUtil.date(),"HH:mm:ss");
+        webSocket.queueCpuOffer(new HashMap<String,Object>(){{
+            put("time",key);
+            //put("value",cpuUsedPc);
+            put("value",Math.random()*100);
+        }});
+        jsonObject.put("historyCpu", webSocket.getQueueCpu());
+        webSocket.queueMemoryOffer(new HashMap<String,Object>(){{
+            put("time",key);
+            put("value",Math.random()*100);
+            //put("value",memoryUsed.doubleValue());
+        }});
+        jsonObject.put("historyMemory", webSocket.getQueueMemory());
+
+        JSONObject json = new JSONObject();
+        json.put("server",jsonObject);
+        log.info("发送给Websocket信息："+json);
+        webSocket.sendAllMessage(json.toJSONString());
+    }
+
+
+
+
+
+
     /*
     @RabbitListener(queuesToDeclare = @Queue(value = "ali2me_yj_info", durable = "true", exclusive = "false", autoDelete = "false"))
     public void recevieByAli2Me(@Payload JSONObject message, @Header(AmqpHeaders.DELIVERY_TAG) long deliveryTag, Channel channel, Message message1) {

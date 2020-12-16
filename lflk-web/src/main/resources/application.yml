@@ -114,12 +114,16 @@ app:
       ali2me-normal-queue: ali2me-normal-queue
       # 死信队列（接收阿里消息队列处理有异常的队列名称）
       ali2me-fail-queue: ali2me-fail-queue
+      # 正常队列（接收接收服务器参数队列名称）
+      server2me-normal-queue: server2me-normal-queue
     # 交换机定义
     exchange:
       # 正常业务交换机
       ali2me-normal-exchange: ali2me-normal-exchange
       # 死信交换机
       ali2me-fail-exchange: ali2me-fail-exchange
+      # 接收服务器参数交换机
+      server2me-normal-exchange: server2me-normal-exchange
     key:
       ali2me-normal-routing-key: ali2me
       ali2me-fail-routing-key: ali2me-fail-routing-key

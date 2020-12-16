@@ -50,11 +50,11 @@ public class RabbitMqApiServiceImpl implements RabbitMqApiService {
         RabbitMqAPIInfo info = RabbitMqAPIInfo.builder().build();
         try {
             JSONObject jsonObj = JSONObject.parseObject(getData("http://"+host+":"+port+"/api/overview", username, password));
-            info.setConnectionNum(jsonObj.getJSONObject("object_totals").getString("connections"));
-            info.setChannelNum(jsonObj.getJSONObject("object_totals").getString("channels"));
-            info.setExchangeNum(jsonObj.getJSONObject("object_totals").getString("exchanges"));
-            info.setQueueNum(jsonObj.getJSONObject("object_totals").getString("queues"));
-            info.setConsumerNum(jsonObj.getJSONObject("object_totals").getString("consumers"));
+            info.setConnectionNum(jsonObj.getJSONObject("object_totals").getInteger("connections"));
+            info.setChannelNum(jsonObj.getJSONObject("object_totals").getInteger("channels"));
+            info.setExchangeNum(jsonObj.getJSONObject("object_totals").getInteger("exchanges"));
+            info.setQueueNum(jsonObj.getJSONObject("object_totals").getInteger("queues"));
+            info.setConsumerNum(jsonObj.getJSONObject("object_totals").getInteger("consumers"));
 
             info.setMessages(jsonObj.getJSONObject("queue_totals").getString("messages"));
             info.setMessages_ready(jsonObj.getJSONObject("queue_totals").getString("messages_ready"));

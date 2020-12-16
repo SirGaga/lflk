@@ -134,6 +134,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/doc.html")
                 .antMatchers("/userInfo")
                 .antMatchers("/components")
+                .antMatchers("/service/**")
+                .antMatchers("/websocket/**")
+                //.antMatchers("/websocketCtrl/**")
                 .antMatchers("/validate/**");
     }
 

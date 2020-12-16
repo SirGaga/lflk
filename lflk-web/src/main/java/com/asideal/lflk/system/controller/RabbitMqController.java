@@ -33,21 +33,7 @@ import java.io.IOException;
 public class RabbitMqController {
     @Autowired
     private RabbitMqService rabbitMqService;
-    //交换机名称
-    @Value("${app.rabbitmq.exchange.ali2me-normal-exchange}")
-    private String ali2meNormalExchange;
-    /**
-     * topic路由key
-     */
-    @Value("${app.rabbitmq.key.ali2me-normal-routing-key}")
-    private String ali2meNormalRoutingKey;
 
-    @PostMapping("/receiveAli2MeMessage")
-    @ApiOperation(value = "接收阿里推送的预警消息")
-    public Result receiveAli2MeMessageByTopic(@ApiParam(value="json格式",required=true)@RequestBody JSONObject message) {
-        rabbitMqService.sendMessageByTopic(ali2meNormalExchange,ali2meNormalRoutingKey,message);
-        return Result.ok();
-    }
     @PostMapping("/sendMessageByWork")
     @ApiOperation(value = "MQ发送消息[工作模式/一对一]")
     public Result sendMessageByWork(@ApiParam(value="消息队列名称",required=true)@RequestParam String queueName,

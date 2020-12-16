@@ -35,13 +35,13 @@ public class RabbitMqAPIInfo {
 
 
     @ApiModelProperty(value = "连接个数")
-    private String connectionNum;
+    private int connectionNum;
     @ApiModelProperty(value = "通道个数")
-    private String channelNum;
+    private int channelNum;
     @ApiModelProperty(value = "交换机个数")
-    private String exchangeNum;
+    private int exchangeNum;
     @ApiModelProperty(value = "队列个数")
-    private String queueNum;
+    private int queueNum;
     @ApiModelProperty(value = "客户端个数")
-    private String consumerNum;
+    private int consumerNum;
 }
