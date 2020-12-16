@@ -9,6 +9,7 @@ import com.asideal.lflk.system.entity.TbSysRole;
 import com.asideal.lflk.system.entity.TbSysRoleMenu;
 import com.asideal.lflk.system.service.TbSysRoleMenuService;
 import com.asideal.lflk.system.service.TbSysRoleService;
+import com.asideal.lflk.system.vo.CrudVo;
 import com.asideal.lflk.system.vo.RoleVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -96,14 +97,11 @@ public class TbSysRoleController extends BaseController {
     }
 
     @ApiOperation(value = "删除角色" ,notes = "根据角色id删除角色")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer")
-    })
     @DeleteMapping("/delete")
-    public Result deleteRoleById(@RequestBody List<Integer> ids){
+    public Result deleteRoleById(@RequestBody CrudVo crudVo){
         try {
-            tbSysRoleService.removeByIds(ids);
-            tbSysRoleMenuService.remove(new LambdaQueryWrapper<TbSysRoleMenu>().in(TbSysRoleMenu::getRoleId,ids));
+            tbSysRoleService.removeByIds(crudVo.getIds());
+            tbSysRoleMenuService.remove(new LambdaQueryWrapper<TbSysRoleMenu>().in(TbSysRoleMenu::getRoleId,crudVo.getIds()));
             return Result.ok().success(true);
         } catch (Exception e) {
             throw new BusinessException(ResultCode.ROLE_DELETE_FAILURE.getCode(),ResultCode.ROLE_DELETE_FAILURE.getMessage());
@@ -124,6 +122,7 @@ public class TbSysRoleController extends BaseController {
 
     public QueryWrapper<TbSysRole> getQueryWrapper(RoleVo roleVo){
         QueryWrapper<TbSysRole> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("deleted",0);
         if (ObjectUtils.isNotEmpty(roleVo)){
             if (StringUtils.isNotEmpty(roleVo.getNameFilter())){
                 queryWrapper.like("role_name", roleVo.getNameFilter()).or().like("role_name_ch", roleVo.getNameFilter());

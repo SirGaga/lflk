@@ -12,6 +12,7 @@ import com.asideal.lflk.system.entity.TbSysRoleMenu;
 import com.asideal.lflk.system.service.TbSysMenuMetaService;
 import com.asideal.lflk.system.service.TbSysMenuService;
 import com.asideal.lflk.system.service.TbSysRoleMenuService;
+import com.asideal.lflk.system.vo.CrudVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import io.swagger.annotations.Api;
@@ -123,17 +124,14 @@ public class TbSysMenuController extends BaseController {
     }
 
     @ApiOperation(value = "删除菜单" ,notes = "根据菜单id删除菜单")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "菜单id", required = true, dataType = "Integer")
-    })
     @DeleteMapping("/delete")
-    public Result deleteMenuById(@RequestBody List<Integer> ids){
+    public Result deleteMenuById(@RequestBody CrudVo crudVo){
         // 要考虑到级联删除
         // 必须要先通过id获取获取下边的子菜单也就是parentId为id的数据，
         // 而且删除只考虑本身和他的下级
-        boolean b = tbSysMenuService.removeByIds(ids);
-        tbSysMenuMetaService.remove(new LambdaQueryWrapper<TbSysMenuMeta>().in(TbSysMenuMeta::getMenuId,ids));
-        tbSysRoleMenuService.remove(new LambdaQueryWrapper<TbSysRoleMenu>().in(TbSysRoleMenu::getMenuId,ids));
+        boolean b = tbSysMenuService.removeByIds(crudVo.getIds());
+        tbSysMenuMetaService.remove(new LambdaQueryWrapper<TbSysMenuMeta>().in(TbSysMenuMeta::getMenuId,crudVo.getIds()));
+        tbSysRoleMenuService.remove(new LambdaQueryWrapper<TbSysRoleMenu>().in(TbSysRoleMenu::getMenuId,crudVo.getIds()));
         if (b) {
             return Result.ok().success(true);
         } else {
