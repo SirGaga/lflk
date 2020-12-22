@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class FoundationAla {
     public static void main(String[] args) throws IOException {
-        Path path = Paths.get("E://2020-12-21.txt");
+        Path path = Paths.get("E://2020-12-22.txt");
         BufferedReader bfr= Files.newBufferedReader(path);
         String result = bfr.readLine();
         JSONObject object = JSONObject.parseObject(result);

@@ -1,13 +1,12 @@
 package com.asideal.lflk.system.controller;
 
 
-import cn.hutool.core.collection.CollUtil;
 import com.asideal.lflk.handler.BusinessException;
 import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysUserRole;
 import com.asideal.lflk.system.service.TbSysUserRoleService;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -41,14 +40,11 @@ public class TbSysUserRoleController {
     })
     @PostMapping({"/{userId}"})
     public Result getRolesByUserId(@PathVariable Integer userId){
-        QueryWrapper<TbSysUserRole> sysUserRoleQueryWrapper = new QueryWrapper<>();
-        sysUserRoleQueryWrapper.eq("user_id",userId);
-        List<TbSysUserRole> userRoles = tbSysUserRoleService.list(sysUserRoleQueryWrapper);
-
-        if (CollUtil.isNotEmpty(userRoles)) {
-            return Result.ok().data("result",true).data("records",userRoles);
-        } else {
-            return Result.error().code(ResultCode.ROLE_NOT_ASSIGNED.getCode()).message(ResultCode.ROLE_NOT_ASSIGNED.getMessage()).data("result",false);
+        try {
+            List<TbSysUserRole> userRoles = tbSysUserRoleService.list(new LambdaQueryWrapper<TbSysUserRole>().eq(TbSysUserRole::getUserId,userId));
+            return Result.ok().success(true).data("records",userRoles);
+        } catch (Exception e) {
+            throw new BusinessException(ResultCode.ROLE_NOT_ASSIGNED.getCode(), ResultCode.ROLE_NOT_ASSIGNED.getMessage());
         }
     }
     @ApiOperation(value = "添加用户角色关系", notes = "通过用户角色关系集合添加数据")
@@ -59,7 +55,7 @@ public class TbSysUserRoleController {
     public Result add(@RequestBody List<TbSysUserRole> tbSysUserRoles){
         boolean b = tbSysUserRoleService.saveBatch(tbSysUserRoles);
         if (b) {
-            return Result.ok().data("result",true);
+            return Result.ok().success(true);
         }else {
             return Result.error().code(ResultCode.USER_ROLE_ADD_FAILURE.getCode()).message(ResultCode.USER_ROLE_ADD_FAILURE.getMessage()).data("result",false);
         }

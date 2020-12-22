@@ -57,6 +57,17 @@ public class TbSysRoleController extends BaseController {
         return Result.ok().success(true).data("total",rolePage.getTotal()).data("records",rolePage.getRecords());
     }
 
+    /**
+     * 查询所有角色
+     * @return  返回角色列表
+     */
+    @ApiOperation(value = "角色列表", notes = "全量查询角色信息")
+    @PostMapping("/all")
+    public Result findRoleAll(){
+        List<TbSysRole> list = tbSysRoleService.list();
+        return Result.ok().success(true).data("records",list);
+    }
+
     @ApiModelProperty(value = "通过角色获取所有的菜单", notes = "通过角色id获取所有的菜单id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer")
