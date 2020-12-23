@@ -6,6 +6,7 @@ import com.asideal.lflk.response.Result;
 import com.asideal.lflk.response.ResultCode;
 import com.asideal.lflk.system.entity.TbSysUserRole;
 import com.asideal.lflk.system.service.TbSysUserRoleService;
+import com.asideal.lflk.system.vo.CrudVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -61,22 +62,22 @@ public class TbSysUserRoleController {
         }
     }
     @ApiOperation(value = "修改用户角色关系", notes = "通过用户角色关系集合修改数据")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "tbSysUserRoles", value = "用户角色集合", required = true, dataType = "List<TbSysUserRole>")
-    })
-    @PostMapping("/update")
-    public Result update(@RequestBody List<TbSysUserRole> tbSysUserRoles){
-
-        boolean b = tbSysUserRoleService.removeByIds(tbSysUserRoles.stream().map(TbSysUserRole::getId).collect(Collectors.toList()));
-        if (b){
-            b = tbSysUserRoleService.saveBatch(tbSysUserRoles);
-            if (b) {
-                return Result.ok().data("result",true);
-            }else {
-                throw new BusinessException(ResultCode.USER_ROLE_ADD_FAILURE.getCode(),ResultCode.USER_ROLE_ADD_FAILURE.getMessage());
-            }
-        } else {
-            throw new BusinessException(ResultCode.USER_ROLE_UPDATE_FAILURE.getCode(),ResultCode.USER_ROLE_UPDATE_FAILURE.getMessage());
+    @PutMapping("/update")
+    public Result update(@RequestBody CrudVo crudVo){
+        try{
+            // 先删除
+            tbSysUserRoleService.remove(new LambdaQueryWrapper<TbSysUserRole>().eq(TbSysUserRole::getUserId,crudVo.getUserId()));
+            // 再保存
+            List<TbSysUserRole> tbSysUserRoles = crudVo.getIds().stream().map(e -> {
+                TbSysUserRole tbSysUserRole = new TbSysUserRole();
+                tbSysUserRole.setRoleId(e);
+                tbSysUserRole.setUserId(crudVo.getUserId());
+                return tbSysUserRole;
+            }).collect(Collectors.toList());
+            tbSysUserRoleService.saveBatch(tbSysUserRoles);
+            return Result.ok().success(true);
+        } catch (Exception e) {
+            throw new BusinessException(ResultCode.USER_ROLE_SAVE_FAILURE.getCode(),ResultCode.USER_ROLE_SAVE_FAILURE.getMessage());
         }
     }
 }

@@ -20,4 +20,7 @@ public class CrudVo {
     @ApiModelProperty(value = "存储单数据操作的ip")
     Integer id;
 
+    @ApiModelProperty(value = "用户id")
+    Integer userId;
+
 }

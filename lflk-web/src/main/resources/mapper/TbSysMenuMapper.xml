@@ -10,8 +10,8 @@
         <foreach collection="roleNames" item="roleName" open="(" close=")" separator=",">
             #{roleName}
         </foreach>
-            )
-        ) and component is not null and disabled = '0'
+            ) and deleted = '0'
+        ) and component is not null and disabled = '0' and deleted = '0'
     </select>
     <select id="getMenuTreeTable" resultType="TbSysMenu">
         select a.id, a.icon, title, if(title is not null, name, title) as name, if(title is not null, title, name) as label, parent_id ,hidden, path, create_time, order_num, type, affix, component
