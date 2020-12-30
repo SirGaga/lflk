@@ -42,6 +42,8 @@
         <jwt-version>0.11.1</jwt-version>
         <!--spring-security-->
         <spring-security-version>2.3.5.RELEASE</spring-security-version>
+        <!--spring-redis-->
+        <spring-redis-version>2.3.5.RELEASE</spring-redis-version>
         <!--spring-test-->
         <spring-test-version>2.3.5.RELEASE</spring-test-version>
         <!--spring-web-->
@@ -97,6 +99,11 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-security</artifactId>
                 <version>${spring-security-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${spring-redis-version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>

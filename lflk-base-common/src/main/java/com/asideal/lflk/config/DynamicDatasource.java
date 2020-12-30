@@ -4,7 +4,6 @@ import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -50,11 +49,16 @@ public class DynamicDatasource {
      */
     private DataSourceProperty createDataSourceSjz() {
         DataSourceProperty dsp = new DataSourceProperty();
-        dsp.setPoolName("salve1");//链接池名称
-        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_sjz?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");//数据库连接
-        dsp.setUsername("root");//用户名
-        dsp.setPassword("123456");//密码
-        dsp.setDriverClassName("com.mysql.cj.jdbc.Driver");//驱动
+        //链接池名称
+        dsp.setPoolName("salve1");
+        //数据库连接
+        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_sjz?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");
+        //用户名
+        dsp.setUsername("root");
+        //密码
+        dsp.setPassword("123456");
+        //驱动
+        dsp.setDriverClassName("com.mysql.cj.jdbc.Driver");
         return dsp;
     }
 
@@ -64,11 +68,16 @@ public class DynamicDatasource {
      */
     private DataSourceProperty createDataSourceBd() {
         DataSourceProperty dsp = new DataSourceProperty();
-        dsp.setPoolName("salve2");//链接池名称
-        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_bd?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");//数据库连接
-        dsp.setUsername("root");//用户名
-        dsp.setPassword("123456");//密码
-        dsp.setDriverClassName("com.mysql.cj.jdbc.Driver");//驱动
+        //链接池名称
+        dsp.setPoolName("salve2");
+        //数据库连接
+        dsp.setUrl("jdbc:mysql://47.92.145.11:3306/lflk_bd?useUnicode=true&useSSL=false&characterEncoding=UTF-8&serverTimeZone=GMT%2B8&allowPublicKeyRetrieval=true");
+        //用户名
+        dsp.setUsername("root");
+        //密码
+        dsp.setPassword("123456");
+        //驱动
+        dsp.setDriverClassName("com.mysql.cj.jdbc.Driver");
         return dsp;
     }
 }

@@ -83,12 +83,27 @@ spring:
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+  redis:
+    host: 47.92.145.11
+    port: 6379
+    timeout: 2000ms
+    lettuce:
+      shutdown-timeout: 100ms
+      pool:
+        max-active: 10
+        max-idle: 8
+        max-wait: 5ms
+        min-idle: 1
+    password: Asideal9090
+
+
 
 
 
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.log4j2.Log4j2Impl
+    cache-enabled: true
   global-config:
     db-config:
       logic-delete-field: deleted # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
